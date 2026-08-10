@@ -1,0 +1,2113 @@
+
+                         stable-diffusion.cpp
+                                  |
+             +--------------------+--------------------+
+             |                    |                    |
+            T2I                  EDIT                 I2I
+             |                    |                    |
+       text prompt          image + prompt       image + prompt
+             |                    |                    |
+             v                    v                    v
+        NEW IMAGE           EDITED IMAGE          NEW IMAGE
+                                  |
+                                  |
+                                  v
+                                REF
+                                  |
+                           reference image
+                                  +
+                              text prompt
+                                  |
+                                  v
+                             NEW IMAGE
+
+
+
+
+
+
+
+============================================================
+DOWNLOAD-STABLEDIFFUSIONCPP-MODEL LIST.TXT
+============================================================
+
+
+
+
+
+
+
+
+
+
+
+==============================================================================================================================
+                         DIFFUSION / IMAGE-GENERATION MODEL FAMILY CHART
+                                  WITH MODEL STORAGE SIZES
+==============================================================================================================================
+
+SIZE KEY
+--------
+
+MAIN MODEL Q4
+    Approximate size of the primary diffusion-model GGUF at 4-bit
+    quantization.
+
+TOTAL MODEL SET
+    Approximate storage required for the complete model/component set:
+    diffusion model + VAE + text encoder + required vision components.
+
+    "VARIES" means the exact total depends on quantization and selected
+    supporting components.
+
+IMPORTANT:
+    These are MODEL STORAGE sizes, NOT VRAM requirements.
+
+    VRAM required during inference can be substantially different.
+
+    Sizes below should be treated as practical planning figures rather
+    than immutable values because model conversions and quantizations
+    change over time.
+
+
+==============================================================================================================================
+FAMILY / MODEL             T2I    EDIT    I2I    REF    INP    VIDEO    MAIN MODEL Q4    TOTAL MODEL SET    COMPLEXITY
+==============================================================================================================================
+
+SD 1.x                    YES    YES*    YES    YES*   YES     NO       ~2-4 GB          ~4-8 GB            LOW
+SD 2.x                    YES    YES*    YES    YES*   YES     NO       ~2-5 GB          ~4-9 GB            LOW
+
+SD-Turbo                  YES    NO*     YES    NO*    YES*    NO       ~2-4 GB          ~4-8 GB            LOW
+
+SDXL                      YES    YES*    YES    YES*   YES     NO       ~3-7 GB          ~6-12 GB           LOW/MEDIUM
+SDXL-Turbo                YES    NO*     YES    NO*    YES*    NO       ~3-7 GB          ~6-12 GB           LOW/MEDIUM
+
+SD 3                      YES    VARIES  VARIES VARIES VARIES  NO       ~5-10 GB         ~10-20 GB          MEDIUM
+SD 3.5                    YES    VARIES  VARIES VARIES VARIES  NO       ~5-10 GB         ~10-20 GB          MEDIUM
+
+
+FLUX.1-dev                YES    NO*     VARIES VARIES VARIES  NO       ~6.9 GB          ~10-15+ GB          HIGH
+FLUX.1-schnell            YES    NO*     VARIES VARIES VARIES  NO       ~6.9 GB          ~10-15+ GB          HIGH
+
+FLUX.1-Kontext-dev        NO*    YES     YES    YES    YES*    NO       ~7 GB*           ~10-15+ GB          HIGH
+
+
+FLUX.2-dev                YES    YES*    YES    YES    YES*    NO       ~VARIES          ~VARIES             VERY HIGH
+
+FLUX.2-klein-4B           YES    YES     YES    YES    YES*    NO       ~2.5-2.6 GB      ~5-7 GB             MEDIUM
+
+FLUX.2-klein-9B           YES    YES     YES    YES    YES*    NO       ~VARIES          ~VARIES             HIGH
+
+FLUX.2-klein-base-4B      YES    NO*     YES*   NO*    NO*    NO       ~VARIES          ~VARIES             MEDIUM
+FLUX.2-klein-base-9B      YES    NO*     YES*   NO*    NO*    NO       ~VARIES          ~VARIES             HIGH
+
+
+QWEN IMAGE                 YES    NO*     VARIES VARIES VARIES  NO       ~12-13 GB        ~15-20+ GB          MEDIUM/HIGH
+
+QWEN IMAGE EDIT            NO*    YES     YES    YES    YES*    NO       ~11.9-13.1 GB    ~15-25+ GB          HIGH
+
+
+Z-IMAGE                    YES    NO*     VARIES NO*    NO*    NO       ~VARIES          ~VARIES             MEDIUM
+
+Z-IMAGE-TURBO              YES    NO*     VARIES NO*    NO*    NO       ~3.7-3.9 GB      ~6-8 GB             LOW/MEDIUM
+
+
+ANIMA                      YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             MEDIUM/HIGH
+
+MAGE-FLOW                  YES    NO*     VARIES VARIES NO*    NO       ~2.4 GB*         ~VARIES             MEDIUM/HIGH
+
+MAGE-FLOW-EDIT             NO*    YES     YES    YES    YES*    NO       ~2.4 GB*         ~VARIES             HIGH
+
+MAGE-FLOW-TURBO            YES    NO*     VARIES VARIES NO*    NO       ~VARIES          ~VARIES             MEDIUM/HIGH
+
+MAGE-FLOW-EDIT-TURBO       NO*    YES     YES    YES    YES*    NO       ~VARIES          ~VARIES             HIGH
+
+
+CHROMA                     YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             MEDIUM/HIGH
+
+CHROMA1-RADIANCE           YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+LENS                        YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             MEDIUM/HIGH
+
+PID                         YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             MEDIUM/HIGH
+
+LONGCAT IMAGE               YES    NO*     VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+LONGCAT IMAGE EDIT          NO*    YES     YES    YES    YES*    NO       ~VARIES          ~VARIES             HIGH
+
+MINIT2I                     YES    NO*     NO*    NO*    NO*    NO       ~VARIES          ~VARIES             LOW/MEDIUM
+
+OVIS-IMAGE                  YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+ERNIE-IMAGE                 YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+BOOGU IMAGE                 YES    NO*     VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             MEDIUM/HIGH
+
+BOOGU IMAGE EDIT            NO*    YES     YES    YES    YES*    NO       ~VARIES          ~VARIES             MEDIUM/HIGH
+
+KREA2                       YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+SEFI-IMAGE                  YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+HIDREAM-O1-IMAGE            YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+IDEOGRAM4                   YES    VARIES  VARIES VARIES VARIES  NO       ~VARIES          ~VARIES             HIGH
+
+
+==============================================================================================================================
+VIDEO MODEL FAMILIES
+==============================================================================================================================
+
+MODEL FAMILY               VIDEO    MAIN MODEL Q4    TOTAL MODEL SET    COMPLEXITY
+------------------------------------------------------------------------------------------------------------------------------
+
+WAN 2.1                    YES      ~VARIES          ~VARIES             VERY HIGH
+WAN 2.2                    YES      ~VARIES          ~VARIES             VERY HIGH
+WAN 2.1 VACE               YES      ~VARIES          ~VARIES             VERY HIGH
+LTX-2.3                    YES      ~VARIES          ~VARIES             VERY HIGH
+HUNYUANVIDEO 1.5           YES      ~VARIES          ~VARIES             VERY HIGH
+LINGBOT-VIDEO              YES      ~VARIES          ~VARIES             VERY HIGH
+
+
+==============================================================================================================================
+BEST MODEL FAMILIES BY STORAGE SIZE
+==============================================================================================================================
+
+MODEL / FAMILY              APPROX. MAIN MODEL Q4     PRIMARY USE
+------------------------------------------------------------------------------------------------------------------------------
+
+SD 1.5                      ~2-4 GB                   T2I / I2I / INPAINTING
+
+SDXL                        ~3-7 GB                   T2I / I2I / INPAINTING
+
+Z-IMAGE-TURBO               ~3.7-3.9 GB               FAST T2I
+
+FLUX.2-KLEIN-4B             ~2.5-2.6 GB               T2I / EDIT / REF / I2I
+
+FLUX.1-SCHNELL              ~6.9 GB                   FAST T2I
+
+FLUX.1-DEV                  ~6.9 GB                   HIGH-QUALITY T2I
+
+QWEN IMAGE EDIT             ~11.9-13.1 GB             IMAGE EDITING
+
+
+==============================================================================================================================
+FLUX.2 KLEIN 4B - EXACT SIZE BREAKDOWN
+==============================================================================================================================
+
+PRIMARY DIFFUSION MODEL:
+
+    Q2_K        ~1.83 GB
+    Q3_K_S      ~2.10 GB
+    Q3_K_M      ~2.12 GB
+    Q4_0        ~2.46 GB
+    Q4_K_S      ~2.58 GB
+    Q4_K_M      ~2.60 GB
+    Q5_0        ~2.92 GB
+    Q5_K_S      ~3.05 GB
+    Q5_K_M      ~3.07 GB
+    Q6_K        ~3.41 GB
+    Q8_0        ~4.30 GB
+    BF16        ~7.75 GB
+    F16         ~7.75 GB
+
+
+RECOMMENDED:
+
+    Q4_0
+        ~2.46 GB
+
+or:
+
+    Q4_K_M
+        ~2.60 GB
+
+
+REQUIRED SUPPORTING COMPONENTS:
+
+    FLUX.2 VAE
+    Qwen3 4B
+
+
+Therefore:
+
+    DO NOT describe FLUX.2-KLEIN-4B as simply a "2.6 GB model."
+
+The complete portable model installation is larger.
+
+
+==============================================================================================================================
+FLUX.1 SIZE BREAKDOWN
+==============================================================================================================================
+
+FLUX.1-DEV:
+
+    Q2_K        ~4.15 GB
+    Q3_K        ~5.35 GB
+    Q4_0        ~6.93 GB
+    Q4_K        ~6.93 GB
+    Q8_0        ~12.8 GB
+
+
+FLUX.1-SCHNELL:
+
+    Q2_K        ~4.11 GB
+    Q3_K        ~5.31 GB
+    Q4_0        ~6.88 GB
+    Q4_K        ~6.88 GB
+    Q8_0        ~12.8 GB
+
+
+FLUX.1 ALSO REQUIRES:
+
+    VAE
+    CLIP-L
+    T5-XXL
+
+
+Therefore the actual portable model package is considerably
+larger than the primary GGUF file.
+
+
+==============================================================================================================================
+Z-IMAGE-TURBO SIZE BREAKDOWN
+==============================================================================================================================
+
+PRIMARY DIFFUSION MODEL:
+
+    Q2_K        ~2.59 GB
+    Q3_K        ~3.14 GB
+    Q4_0        ~3.68 GB
+    Q4_K        ~3.86 GB
+    Q5_0        ~4.54 GB
+    Q6_K        ~5.26 GB
+    Q8_0        ~VARIES
+
+
+RECOMMENDED:
+
+    Q4_0
+        ~3.68 GB
+
+or:
+
+    Q4_K
+        ~3.86 GB
+
+
+Z-IMAGE ALSO REQUIRES:
+
+    VAE
+    Qwen3 text model
+
+
+==============================================================================================================================
+QWEN IMAGE EDIT SIZE BREAKDOWN
+==============================================================================================================================
+
+PRIMARY DIFFUSION MODEL:
+
+    Q2_K        ~7.06 GB
+    Q3_K_S      ~8.95 GB
+    Q3_K_M      ~VARIES
+    Q4_K_S      ~12.1 GB
+    Q4_0        ~11.9 GB
+    Q4_1        ~12.8 GB
+    Q4_K_M      ~13.1 GB
+    Q5_K_S      ~14.1 GB
+    Q5_0        ~14.4 GB
+    Q5_1        ~15.4 GB
+    Q5_K_M      ~14.9 GB
+    Q6_K        ~16.8 GB
+    Q8_0        ~21.8 GB
+    BF16        ~40.9 GB
+
+
+QWEN IMAGE EDIT ALSO REQUIRES:
+
+    Qwen2.5-VL-7B
+    Qwen2.5-VL vision component / mmproj where applicable
+    Qwen Image VAE
+
+
+This is therefore a MUCH larger portable model installation
+than FLUX.2-Klein-4B.
+
+
+==============================================================================================================================
+MAGE-FLOW SIZE
+==============================================================================================================================
+
+A current GGUF conversion lists:
+
+    4B parameters
+
+    NVFP4
+        ~2.37 GB
+
+    F16
+        ~346 MB*
+
+*The listed F16 figure is for that particular repository's
+provided file and should NOT be interpreted as the complete
+Mage-Flow model set.
+
+Mage-Flow requires additional model components depending on
+the workflow.
+
+Mage-Flow-Edit additionally uses multimodal / vision
+conditioning.
+
+
+==============================================================================================================================
+MODEL STORAGE VS VRAM
+==============================================================================================================================
+
+DO NOT USE:
+
+    MODEL FILE SIZE = VRAM REQUIREMENT
+
+
+For example:
+
+    FLUX.2-KLEIN-4B Q4
+        ~2.6 GB model file
+
+
+does NOT mean:
+
+    "Requires 2.6 GB VRAM"
+
+
+Inference requires memory for:
+
+    model weights
+    activations
+    attention
+    VAE
+    text model
+    image/reference processing
+    Vulkan/ggml allocations
+    working buffers
+
+
+The actual VRAM requirement depends heavily on:
+
+    resolution
+    quantization
+    offloading
+    backend
+    number of reference images
+    batch size
+    sampler
+    context length
+
+
+==============================================================================================================================
+PORTABLE STORAGE PLANNING
+==============================================================================================================================
+
+MINIMUM TEST INSTALLATION:
+
+    stable-diffusion.cpp engine
+    +
+    FLUX.2-KLEIN-4B Q4
+    +
+    VAE
+    +
+    Qwen3 4B
+
+    EXPECT:
+        several GB
+
+
+PRACTICAL MULTI-MODEL INSTALLATION:
+
+    Engine
+        +
+    FLUX.2-KLEIN-4B
+        +
+    Z-IMAGE-TURBO
+        +
+    Qwen Image Edit
+
+    EXPECT:
+        approximately 25-40+ GB
+
+
+LARGE MODEL LIBRARY:
+
+    FLUX
+    Qwen
+    Z-Image
+    Mage-Flow
+    SDXL
+    SD1.5
+    additional LoRAs
+    ControlNets
+    reference models
+
+    EXPECT:
+        50-200+ GB
+
+
+Therefore a USB installation should be designed so that
+MODELS ARE OPTIONAL DOWNLOADS rather than being permanently
+embedded in the engine installation.
+
+
+==============================================================================================================================
+RECOMMENDED FIRST DOWNLOAD
+==============================================================================================================================
+
+MODEL:
+
+    FLUX.2-KLEIN-4B
+
+
+PRIMARY MODEL:
+
+    Q4_0
+        ~2.46 GB
+
+or:
+
+    Q4_K_M
+        ~2.60 GB
+
+
+CAPABILITIES:
+
+    T2I
+    EDIT
+    I2I
+    REF
+
+
+REQUIRED:
+
+    FLUX.2 VAE
+    Qwen3 4B
+
+
+WHY THIS IS STILL MY #1 CHOICE:
+
+    Small primary diffusion model
+    +
+    modern architecture
+    +
+    T2I
+    +
+    image editing
+    +
+    reference-image workflows
+    +
+    image-to-image capability
+    +
+    GGUF support
+    +
+    stable-diffusion.cpp support
+    +
+    Vulkan backend
+
+
+==============================================================================================================================
+RECOMMENDED PORTABLE MODEL TIERS
+==============================================================================================================================
+
+TIER 1
+------
+
+    FLUX.2-KLEIN-4B
+
+    ~2.5-2.6 GB primary model
+
+    T2I / EDIT / I2I / REF
+
+
+TIER 2
+------
+
+    Z-IMAGE-TURBO
+
+    ~3.7-3.9 GB primary model
+
+    T2I
+
+
+TIER 3
+------
+
+    FLUX.2-KLEIN-9B
+
+    Larger than 4B
+
+    T2I / EDIT / I2I / REF
+
+
+TIER 4
+------
+
+    QWEN IMAGE EDIT
+
+    ~12-13 GB primary Q4 model
+
+    EDIT / I2I / REF
+
+
+TIER 5
+------
+
+    FLUX.1-DEV
+
+    ~6.9 GB primary Q4 model
+
+    T2I
+
+
+TIER 6
+------
+
+    SDXL
+
+    ~3-7 GB primary model
+
+    T2I / I2I / INPAINTING
+    plus optional conditioning ecosystem
+
+
+==============================================================================================================================
+BOTTOM LINE
+==============================================================================================================================
+
+IF STORAGE IS THE PRIORITY:
+
+    FLUX.2-KLEIN-4B
+
+
+IF LOW-VRAM T2I IS THE PRIORITY:
+
+    Z-IMAGE-TURBO
+
+
+IF CLASSIC SD ECOSYSTEM IS THE PRIORITY:
+
+    SDXL
+
+
+IF MODERN IMAGE EDITING IS THE PRIORITY:
+
+    FLUX.2-KLEIN-4B
+    QWEN IMAGE EDIT
+    MAGE-FLOW-EDIT
+
+
+IF ONE MODEL SHOULD COVER THE MOST WORKFLOWS:
+
+    FLUX.2-KLEIN-4B
+
+
+==============================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VANILLA UPSTREAM STABLE-DIFFUSION.CPP MODEL CATALOG
+===================================================
+
+This catalog contains image-generation and image-editing models
+compatible with the upstream stable-diffusion.cpp project.
+
+This portable project is intended to support FOUR distinct
+image workflows:
+
+    TEXT-TO-IMAGE
+    IMAGE-EDITING
+    IMAGE-TO-IMAGE
+    REFERENCE / CONDITIONING
+
+These workflows are related but are NOT interchangeable.
+
+stable-diffusion.cpp supports multiple generations of diffusion
+and diffusion-transformer models. These model families do NOT
+all use the same files or command-line options.
+
+Supported weight formats include:
+
+- GGUF
+- Safetensors
+- PyTorch checkpoint (.ckpt, .pth, .pt)
+
+Supported GPU backend for this portable project:
+
+- Vulkan
+
+
+============================================================
+THE FOUR REQUIRED IMAGE WORKFLOWS
+============================================================
+
+
+1. TEXT-TO-IMAGE
+----------------
+
+Capability tag:
+
+    T2I
+
+Purpose:
+
+Generate a completely new image from a text prompt.
+
+Input:
+
+    text prompt
+
+Output:
+
+    new image
+
+
+Example:
+
+    "A cinematic photograph of a red fox walking through
+     a snowy forest at sunrise."
+
+        |
+        v
+
+    NEW IMAGE
+
+
+This is the traditional image-generation workflow.
+
+
+============================================================
+
+
+2. IMAGE-EDITING
+----------------
+
+Capability tag:
+
+    EDIT
+
+Purpose:
+
+Modify an existing image according to a natural-language
+instruction.
+
+Input:
+
+    existing image
+    text instruction
+
+Output:
+
+    modified image
+
+
+Example:
+
+    Existing image
+        +
+    "Change the jacket from black to red."
+
+        |
+        v
+
+    EDITED IMAGE
+
+
+Dedicated image-editing models should be cataloged separately
+from ordinary text-to-image models.
+
+Current stable-diffusion.cpp supports dedicated image-editing
+families including:
+
+- FLUX.1-Kontext-dev
+- Qwen Image Edit
+- LongCat Image Edit
+- Boogu Image Edit
+- Mage-Flow-Edit
+
+
+============================================================
+
+
+3. IMAGE-TO-IMAGE
+----------------
+
+Capability tag:
+
+    I2I
+
+Purpose:
+
+Use an existing image as the starting point for generating
+a new image.
+
+Input:
+
+    existing image
+    text prompt
+    transformation strength / related parameters
+
+Output:
+
+    NEW generated image
+
+The output is derived from the source image but is a newly
+generated image.
+
+Example:
+
+    Existing photograph
+        +
+    "Turn this into an oil painting."
+        +
+    transformation strength
+
+        |
+        v
+
+    NEW IMAGE
+
+
+I2I is NOT the same as dedicated instruction-based image
+editing.
+
+The model may preserve some structure from the source while
+allowing substantial changes.
+
+
+============================================================
+
+
+4. REFERENCE / CONDITIONING
+---------------------------
+
+Capability tag:
+
+    REF
+
+Purpose:
+
+Use one or more reference images to influence a NEW generated
+image.
+
+The reference image is used as conditioning information.
+
+Input:
+
+    reference image
+    text prompt
+
+Output:
+
+    NEW generated image
+
+
+Example:
+
+    Reference photograph of a person
+        +
+    "A cinematic portrait of this person
+     standing in a futuristic city at night."
+
+        |
+        v
+
+    NEW IMAGE
+
+
+The reference image is NOT simply edited.
+
+The purpose is to use characteristics of the reference image
+to influence generation.
+
+
+============================================================
+REFERENCE / CONDITIONING IS NOT ONE SINGLE TECHNIQUE
+============================================================
+
+Reference conditioning can be implemented through different
+mechanisms depending on the model family.
+
+Examples include:
+
+- IP-Adapter
+- image encoders
+- vision-language models
+- ControlNet
+- model-specific reference-image conditioning
+- multimodal diffusion transformers
+
+Therefore the catalog must identify the actual mechanism used
+by each model.
+
+Do NOT assume that all reference-image workflows use
+IP-Adapter.
+
+
+============================================================
+IMPORTANT DISTINCTION
+============================================================
+
+These four workflows should remain separate:
+
+    T2I
+        Text -> NEW IMAGE
+
+    EDIT
+        IMAGE + INSTRUCTION -> MODIFIED IMAGE
+
+    I2I
+        IMAGE + PROMPT + STRENGTH -> NEW IMAGE
+
+    REF
+        REFERENCE IMAGE + PROMPT -> NEW IMAGE
+
+
+An individual model may support one, several, or all of these
+capabilities.
+
+
+============================================================
+MODEL CAPABILITY TAGS
+============================================================
+
+Every model entry must contain one or more capability tags.
+
+Valid tags:
+
+    T2I
+        TEXT-TO-IMAGE
+
+    EDIT
+        IMAGE-EDITING
+
+    I2I
+        IMAGE-TO-IMAGE
+
+    REF
+        REFERENCE / CONDITIONING
+
+
+Examples:
+
+    CAPABILITY:
+        T2I
+
+    CAPABILITY:
+        T2I, I2I
+
+    CAPABILITY:
+        EDIT, REF
+
+    CAPABILITY:
+        T2I, EDIT, REF
+
+
+Do NOT infer capability solely from the model family name.
+
+
+============================================================
+MODEL FAMILIES
+============================================================
+
+
+1. SD1.x / SD2.x
+----------------
+
+Examples:
+
+- Stable Diffusion 1.5
+- Stable Diffusion 2.1
+- SD-Turbo
+
+Primary capability:
+
+    T2I
+
+Potential additional workflows:
+
+    I2I
+    EDIT
+    REF
+
+depending on the specific implementation and additional
+components.
+
+Supported ecosystem components can include:
+
+- LoRA
+- ControlNet
+- IP-Adapter
+- LCM
+- PhotoMaker
+
+SD1.5 is an excellent compatibility and testing family.
+
+Typical simple model:
+
+    v1-5-pruned-emaonly.safetensors
+
+
+============================================================
+
+
+2. SDXL
+--------
+
+Examples:
+
+- SDXL 1.0
+- SDXL-Turbo
+- SDXL distilled models
+
+Primary capability:
+
+    T2I
+
+Potential additional workflows:
+
+    I2I
+    EDIT
+    REF
+
+through supported image-to-image, inpainting, IP-Adapter,
+ControlNet, or related mechanisms.
+
+SDXL is a major general-purpose image-generation family.
+
+
+============================================================
+
+
+3. SD3 / SD3.5
+--------------
+
+Examples:
+
+- Stable Diffusion 3
+- Stable Diffusion 3.5
+
+Primary capability:
+
+    T2I
+
+Additional capabilities depend on the specific model and
+stable-diffusion.cpp support.
+
+SD3 / SD3.5 use different architectures and conditioning
+requirements from SD1.x and SDXL.
+
+Do NOT assume SDXL components are interchangeable with SD3
+components.
+
+
+============================================================
+
+
+4. FLUX.1
+---------
+
+Examples:
+
+- FLUX.1-dev
+- FLUX.1-schnell
+
+Primary capability:
+
+    T2I
+
+Typical components:
+
+    diffusion model
+    VAE
+    CLIP-L
+    T5-XXL
+
+stable-diffusion.cpp documents these components explicitly.
+
+Pre-converted GGUF diffusion weights are available.
+
+FLUX.1-schnell is optimized for faster generation.
+
+FLUX.1-dev generally provides higher quality at greater
+computational cost.
+
+
+------------------------------------------------------------
+FLUX.1 KONTEXT
+------------------------------------------------------------
+
+Model family:
+
+    FLUX.1-Kontext
+
+Capability:
+
+    EDIT
+    REF
+
+FLUX.1-Kontext is an image-editing/reference-conditioning
+family and should NOT automatically be treated as equivalent
+to FLUX.1-dev or FLUX.1-schnell.
+
+
+============================================================
+
+
+5. FLUX.2
+---------
+
+Examples:
+
+- FLUX.2-dev
+- FLUX.2-klein
+- FLUX.2-klein-base
+
+Capabilities vary by model.
+
+Some FLUX.2 variants support:
+
+    T2I
+    EDIT
+    REF
+
+FLUX.2 should be treated as its own model family.
+
+Do NOT assume FLUX.1 components can be substituted for FLUX.2
+components.
+
+
+------------------------------------------------------------
+FLUX.2 MULTI-REFERENCE
+------------------------------------------------------------
+
+Some FLUX.2 variants are specifically designed for
+multi-reference image workflows.
+
+These can use multiple reference images while generating a
+new image.
+
+This is particularly important for the REF capability.
+
+The model definition must therefore be able to specify:
+
+    maximum reference images
+    reference-image support
+    required vision components
+    reference conditioning method
+
+
+============================================================
+
+
+6. QWEN IMAGE
+-------------
+
+Qwen Image is a modern image-generation family.
+
+Primary capability:
+
+    T2I
+
+Potential capabilities depend on the specific model variant.
+
+
+------------------------------------------------------------
+QWEN IMAGE EDIT
+------------------------------------------------------------
+
+Model family:
+
+    Qwen Image Edit
+
+Capability:
+
+    EDIT
+
+Variants include the Qwen Image Edit series.
+
+These are dedicated image-editing models and should not be
+automatically substituted for the standard Qwen Image
+text-to-image model.
+
+
+============================================================
+
+
+7. Z-IMAGE
+----------
+
+Examples:
+
+- Z-Image
+- Z-Image-Turbo
+
+Primary capability:
+
+    T2I
+
+Typical components:
+
+    diffusion model
+    VAE
+    Qwen3 text model
+
+stable-diffusion.cpp documents this component structure.
+
+Quantized GGUF versions are available.
+
+Z-Image-Turbo is particularly interesting for lower-memory
+systems.
+
+
+Z-Image is therefore an important initial T2I candidate.
+
+It should NOT currently be classified as a dedicated EDIT
+model merely because it accepts image-related features in
+other software.
+
+
+============================================================
+
+
+8. ANIMA
+--------
+
+Anima is a modern image-generation family.
+
+Primary capability:
+
+    T2I
+
+Typical components:
+
+    diffusion model
+    VAE
+    Qwen3 text model
+
+Additional capabilities depend on the specific model version
+and stable-diffusion.cpp implementation.
+
+
+============================================================
+
+
+9. MAGE-FLOW
+------------
+
+Mage-Flow is particularly important because it explicitly
+supports both text-to-image and instruction-based image
+editing.
+
+The upstream documentation describes:
+
+    4B native-resolution multimodal diffusion transformer
+    Qwen3-VL for text and image conditioning
+    Mage-VAE
+
+Variants include:
+
+- Mage-Flow
+- Mage-Flow-Base
+- Mage-Flow-Turbo
+- Mage-Flow-Edit
+- Mage-Flow-Edit-Turbo
+- Mage-Flow-Edit-Base
+
+
+------------------------------------------------------------
+MAGE-FLOW GENERATION
+------------------------------------------------------------
+
+Capability:
+
+    T2I
+
+Typical components:
+
+    diffusion model
+    Qwen3-VL
+    Mage-VAE
+
+
+------------------------------------------------------------
+MAGE-FLOW EDIT
+------------------------------------------------------------
+
+Capability:
+
+    EDIT
+    REF
+
+Mage-Flow-Edit accepts one or more reference images.
+
+The upstream example uses:
+
+    diffusion model
+    Qwen3-VL
+    Qwen3-VL vision component
+    Mage-VAE
+    reference image
+
+This makes Mage-Flow an important model family for the
+portable project because it demonstrates a modern architecture
+where image conditioning is an integral part of the model.
+
+Do NOT confuse its vision component with llama.cpp's
+mmproj concept.
+
+
+============================================================
+
+
+10. CHROMA
+----------
+
+Chroma is a modern diffusion model family.
+
+Primary capability:
+
+    T2I
+
+Additional capabilities depend on the specific model variant
+and current stable-diffusion.cpp support.
+
+
+============================================================
+
+
+11. LONGCAT IMAGE
+-----------------
+
+LongCat Image is a modern image-generation family.
+
+Generation family:
+
+    LongCat Image
+        T2I
+
+Editing family:
+
+    LongCat Image Edit
+        EDIT
+
+
+The two should be treated as separate model definitions.
+
+
+============================================================
+
+
+12. BOOGU IMAGE
+---------------
+
+Generation family:
+
+    Boogu Image
+        T2I
+
+Editing family:
+
+    Boogu Image Edit
+        EDIT
+
+
+The two should be treated as separate model definitions.
+
+
+============================================================
+
+
+13. OTHER CURRENT IMAGE FAMILIES
+--------------------------------
+
+Current stable-diffusion.cpp also lists support for:
+
+- Lens
+- Chroma1-Radiance
+- PiD
+- MiniT2I
+- Ovis-Image
+- ERNIE-Image
+- Krea2
+- SeFi-Image
+- HiDream-O1-Image
+- Ideogram4
+
+Each should be added to the detailed downloader catalog only
+after its exact model components and capabilities are verified.
+
+
+============================================================
+IMAGE EDITING MECHANISMS
+============================================================
+
+IMAGE EDITING can mean several different things.
+
+
+1. INPAINTING
+-------------
+
+Existing image
+    +
+mask
+    +
+prompt
+    |
+    v
+modified region
+
+
+2. IMAGE-TO-IMAGE
+-----------------
+
+Existing image
+    +
+prompt
+    +
+transformation strength
+    |
+    v
+new generated image
+
+
+3. INSTRUCTION-BASED EDITING
+----------------------------
+
+Existing image
+    +
+natural-language instruction
+    |
+    v
+modified image
+
+
+4. REFERENCE-CONDITIONED GENERATION
+------------------------------------
+
+Reference image
+    +
+text prompt
+    |
+    v
+new generated image
+
+
+These are different workflows.
+
+The catalog must not collapse them into a generic
+"image-to-image" category.
+
+
+============================================================
+REFERENCE / CONDITIONING MECHANISMS
+============================================================
+
+The following mechanisms may provide reference conditioning:
+
+    IP-Adapter
+
+    ControlNet
+
+    Vision encoder
+
+    Vision-language model
+
+    Model-specific reference conditioning
+
+    Multimodal diffusion transformer
+
+
+The required files and command-line parameters vary.
+
+For example:
+
+SD1.5 / SDXL:
+
+    IP-Adapter
+
+may provide reference-image conditioning.
+
+Mage-Flow-Edit:
+
+    Qwen3-VL
+    vision component
+    reference image
+
+provides multimodal image conditioning.
+
+These are architecturally different approaches.
+
+
+============================================================
+MODEL COMPONENT TERMINOLOGY
+============================================================
+
+
+DIFFUSION MODEL
+
+The primary image-generation neural network.
+
+Typical option:
+
+    --diffusion-model
+
+
+VAE
+
+Variational Autoencoder.
+
+Converts between latent representations and image pixels.
+
+Typical option:
+
+    --vae
+
+
+LLM / TEXT ENCODER
+
+A language model used by some modern diffusion families to
+encode text prompts.
+
+Typical option:
+
+    --llm
+
+
+CLIP-L
+
+A CLIP text encoder used by some model families such as FLUX.1.
+
+Typical option:
+
+    --clip_l
+
+
+T5-XXL
+
+A large text encoder used by FLUX.1.
+
+Typical option:
+
+    --t5xxl
+
+
+VISION ENCODER
+
+Processes an image so that image information can be used as
+conditioning.
+
+The exact model and option depend on the model family.
+
+
+VISION-LANGUAGE MODEL
+
+A multimodal language model capable of processing both text
+and images.
+
+For example, Mage-Flow uses Qwen3-VL for text and image
+conditioning.
+
+
+LLM VISION COMPONENT
+
+Some multimodal models require an additional vision component.
+
+For example, the current Mage-Flow-Edit documentation uses:
+
+    --llm_vision
+
+with a Qwen3-VL vision component.
+
+This is NOT the same thing as an ordinary text encoder.
+
+
+IP-ADAPTER
+
+An image-conditioning mechanism supported by stable-diffusion.cpp
+for supported model families including SD1.5 and SDXL.
+
+It can use reference images to influence generation.
+
+It is NOT a replacement for the base diffusion model.
+
+
+CONTROLNET
+
+An additional conditioning model supported for SD1.5.
+
+It can guide generation using structural information such as
+edges, depth, poses, or related controls.
+
+It is NOT required for ordinary T2I generation.
+
+
+LORA
+
+A small adapter that modifies the behavior or style of a base
+model.
+
+LoRA is NOT a replacement for the base diffusion model.
+
+
+============================================================
+MODEL DIRECTORY ORGANIZATION
+============================================================
+
+The portable project should NOT assume that every model is
+one file.
+
+Recommended logical structure:
+
+.\Models\
+    \diffusion_models\
+    \vae\
+    \text_encoders\
+    \vision\
+    \clip\
+    \loras\
+    \controlnet\
+    \ip_adapter\
+    \edit\
+    \reference\
+    \outputs\
+
+
+Only create directories that are actually needed.
+
+Do NOT create unnecessary project environment variables.
+
+The existing project variables and directory structure should
+be reused whenever possible.
+
+
+============================================================
+MODEL DEFINITION REQUIREMENTS
+============================================================
+
+Every model entry should identify:
+
+    FAMILY
+    MODEL NAME
+    CAPABILITY
+    MODEL REPOSITORY
+    MODEL FILE
+    MODEL FORMAT
+    DIFFUSION MODEL
+    VAE
+    TEXT ENCODER
+    VISION ENCODER
+    VISION-LANGUAGE MODEL
+    ADDITIONAL COMPONENTS
+    QUANTIZATION
+    REFERENCE SUPPORT
+    NUMBER OF REFERENCE IMAGES
+    PURPOSE
+
+
+Example:
+
+    FAMILY:
+        Z-Image
+
+    MODEL NAME:
+        Z-Image-Turbo
+
+    CAPABILITY:
+        T2I
+
+    DIFFUSION MODEL:
+        z_image_turbo-*.gguf
+
+    VAE:
+        ae.safetensors
+
+    TEXT ENCODER:
+        Qwen3-4B
+
+    REFERENCE SUPPORT:
+        NO
+
+
+Example:
+
+    FAMILY:
+        Qwen Image
+
+    MODEL NAME:
+        Qwen Image Edit
+
+    CAPABILITY:
+        EDIT
+
+    PURPOSE:
+        Instruction-based image editing
+
+
+Example:
+
+    FAMILY:
+        Mage-Flow
+
+    MODEL NAME:
+        Mage-Flow-Edit
+
+    CAPABILITY:
+        EDIT, REF
+
+    DIFFUSION MODEL:
+        Mage-Flow-Edit
+
+    VAE:
+        Mage-VAE
+
+    VISION-LANGUAGE MODEL:
+        Qwen3-VL
+
+    VISION ENCODER:
+        Qwen3-VL vision component
+
+    REFERENCE SUPPORT:
+        YES
+
+    NUMBER OF REFERENCE IMAGES:
+        One or more
+
+
+============================================================
+CAPABILITY MATRIX
+============================================================
+
+FAMILY              T2I    EDIT    I2I    REF
+------------------------------------------------------------
+SD1.x               YES    YES*    YES    YES*
+SD2.x               YES    YES*    YES    YES*
+SDXL                YES    YES*    YES    YES*
+SD3/SD3.5           YES    VARIES  VARIES VARIES
+FLUX.1-dev          YES    NO      VARIES VARIES
+FLUX.1-schnell      YES    NO      VARIES VARIES
+FLUX.1-Kontext      NO*    YES     YES    YES
+FLUX.2              YES    YES*    YES    YES
+Qwen Image          YES    NO      VARIES VARIES
+Qwen Image Edit     NO*    YES     YES    YES
+Z-Image             YES    NO      VARIES NO*
+Anima               YES    VARIES  VARIES VARIES
+Mage-Flow           YES    YES*    YES    YES
+Chroma              YES    VARIES  VARIES VARIES
+LongCat Image       YES    NO      VARIES VARIES
+LongCat Image Edit  NO*    YES     YES    YES
+Boogu Image         YES    NO      VARIES VARIES
+Boogu Image Edit    NO*    YES     YES    YES
+
+
+* Capability depends on the exact model, supported workflow,
+  and required additional components.
+
+NO* means the named model is primarily intended for the other
+workflow and should not be assumed to support the capability.
+
+VARIES means the exact model variant must be checked.
+
+
+============================================================
+IMPORTANT COMPATIBILITY RULE
+============================================================
+
+Model components are family-specific.
+
+The following are NOT universally interchangeable:
+
+    SD1.x VAE
+    SDXL VAE
+    SD3 VAE
+    FLUX VAE
+    Qwen Image VAE
+    Z-Image VAE
+    Mage-VAE
+
+
+Text encoders are also family-specific.
+
+For example:
+
+    FLUX.1
+        CLIP-L + T5-XXL
+
+while:
+
+    Z-Image
+        Qwen3
+
+
+Modern multimodal models may additionally require:
+
+    vision encoder
+    vision-language model
+    LLM vision component
+
+
+These components must be cataloged as part of the model
+definition.
+
+
+============================================================
+INITIAL RECOMMENDED MODELS
+============================================================
+
+
+1. STABLE DIFFUSION 1.5
+
+Capability:
+
+    T2I
+    I2I
+
+Optional conditioning:
+
+    REF
+    EDIT
+
+through supported additional components such as IP-Adapter
+and ControlNet.
+
+Purpose:
+
+    Basic compatibility test
+    Large ecosystem
+    Low complexity
+
+
+2. SDXL
+
+Capability:
+
+    T2I
+    I2I
+
+Optional:
+
+    REF
+    EDIT
+
+through supported conditioning mechanisms.
+
+Purpose:
+
+    General-purpose high-quality image generation
+
+
+3. FLUX.1-SCHNELL
+
+Capability:
+
+    T2I
+
+Purpose:
+
+    Fast modern text-to-image generation
+
+
+4. Z-IMAGE-TURBO
+
+Capability:
+
+    T2I
+
+Components:
+
+    diffusion model
+    VAE
+    Qwen3
+
+Purpose:
+
+    Modern T2I
+    Lower-memory configurations
+
+
+5. QWEN IMAGE EDIT
+
+Capability:
+
+    EDIT
+
+Purpose:
+
+    Modern instruction-based image editing
+
+
+6. FLUX.1-KONTEXT
+
+Capability:
+
+    EDIT
+    REF
+
+Purpose:
+
+    Reference-aware image editing and generation workflows
+
+
+7. MAGE-FLOW
+
+Capability:
+
+    T2I
+
+Purpose:
+
+    Modern multimodal text-to-image generation
+
+
+8. MAGE-FLOW-EDIT
+
+Capability:
+
+    EDIT
+    REF
+
+Purpose:
+
+    Instruction-based image editing
+    Reference-image conditioning
+    Multiple reference images
+
+
+============================================================
+VIDEO MODELS
+============================================================
+
+Video generation is intentionally NOT part of the first
+image-generation catalog.
+
+Current stable-diffusion.cpp also supports video families
+including:
+
+- Wan2.1
+- Wan2.2
+- LTX-2.3
+- HunyuanVideo 1.5
+- LingBot-Video
+
+These should eventually have their own model catalog.
+
+Do NOT mix video models into the initial image-model downloader.
+
+
+============================================================
+CATALOG RULE
+============================================================
+
+The model downloader must NOT simply download the first
+.gguf or .safetensors file it finds.
+
+A model definition is a COMPLETE COMPONENT SET.
+
+For example:
+
+    Z-IMAGE-TURBO
+
+is not simply:
+
+    z_image_turbo.gguf
+
+It is:
+
+    diffusion model
+    +
+    VAE
+    +
+    Qwen3 text model
+
+
+Likewise:
+
+    FLUX.1
+
+is not simply:
+
+    flux.gguf
+
+It requires the appropriate:
+
+    diffusion model
+    +
+    VAE
+    +
+    CLIP-L
+    +
+    T5-XXL
+
+
+And a multimodal editing model such as Mage-Flow-Edit may
+require:
+
+    diffusion model
+    +
+    VAE
+    +
+    Qwen3-VL
+    +
+    vision component
+    +
+    reference image
+
+
+Therefore the downloader must understand the MODEL FAMILY
+and MODEL CAPABILITY before downloading anything.
+
+
+============================================================
+DOWNLOADER REQUIREMENT
+============================================================
+
+The eventual downloader should allow selection by:
+
+    MODEL FAMILY
+
+    MODEL NAME
+
+    CAPABILITY
+
+
+Example:
+
+    Select model family:
+        1. SD1.x
+        2. SDXL
+        3. FLUX
+        4. Qwen Image
+        5. Z-Image
+        6. Mage-Flow
+        ...
+
+
+Then:
+
+    Select model:
+        ...
+
+
+Then:
+
+    Supported capabilities:
+        T2I
+        EDIT
+        I2I
+        REF
+
+
+The downloader should download every required component for
+that exact model definition.
+
+It should NOT download unrelated model components.
+
+
+============================================================
+RUNNER REQUIREMENT
+============================================================
+
+Run-Engine.bat must eventually support:
+
+    TEXT-TO-IMAGE
+    IMAGE-EDITING
+    IMAGE-TO-IMAGE
+    REFERENCE / CONDITIONING
+
+
+The runner must use the selected model definition to determine:
+
+    MODEL FAMILY
+    MODEL CAPABILITY
+    REQUIRED COMPONENTS
+    REQUIRED COMMAND-LINE OPTIONS
+
+
+It must NOT infer the workflow merely from:
+
+    filename
+    extension
+    directory name
+
+
+============================================================
+PORTABLE PROJECT GOAL
+============================================================
+
+One completely portable stable-diffusion.cpp installation:
+
+    .\engine\vulkan\
+
+with model resources under:
+
+    .\Models\
+
+must provide the ability to perform:
+
+    TEXT-TO-IMAGE
+
+    IMAGE-EDITING
+
+    IMAGE-TO-IMAGE
+
+    REFERENCE / CONDITIONING
+
+
+The entire PROJ_ROOT folder must remain portable.
+
+No system-wide installation should be required.
+
+No system-specific model paths should be required.
+
+No drive letters should be embedded in the project.
+
+Existing project environment variables should be reused
+whenever possible.
+
+No unnecessary environment variables should be created.
+
+
+============================================================
+END OF CATALOG
+============================================================
