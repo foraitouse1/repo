@@ -1,0 +1,427 @@
+Aircraft (L1)	Aircraft (L2)
+Aerospatiale / BAC	
+	Concorde
+Airbus	
+	Airbus A220 Family
+	Airbus A220-100
+	Airbus A220-300
+	Airbus A300
+	Airbus A310 Family
+	Airbus A310-200
+	Airbus A310-300
+	Airbus A318
+	Airbus A319
+	Airbus A320 Family
+	Airbus A320-200
+	Airbus A320neo
+	Airbus A321 Family
+	Airbus A321-200
+	Airbus A321neo
+	Airbus A330 Family
+	Airbus A330-200
+	Airbus A330-300
+	Airbus A330-900neo
+	Airbus A340-600
+	Airbus A350-900
+	Airbus A380-800
+Alexander	
+	Alexander Eaglerock Biplane Family
+ATR	
+	ATR 42
+	ATR 72
+Aviation Traders	
+	Aviation Traders ATL-98 Carvair
+Bach	
+	Bach Air Yacht Family
+	Bach Air Yacht 3-CT-2
+	Bach Air Yacht 3-CT-5
+Beech	
+	Beech B17L Staggerwing
+	Beech C17B Staggerwing
+	Beechcraft 1900C
+	Beechcraft 1900D
+	Beech B99-airliner
+Bellanca	
+	Bellanca CH-300 Pacemaker
+	Bellanca Skyrocket D
+Benoist	
+	Benoist Type XIV
+Boeing	
+	Boeing 204
+	Boeing 221A Monomail
+	Boeing 247 Family
+	Boeing 247 Family
+	Boeing 247
+	Boeing 247D
+	Boeing 2707 SST (Super Sonic Transport)
+	Boeing 307 Stratoliner
+	Boeing 314
+	Boeing 377 Stratocruiser
+	Boeing 40B-4
+	Boeing 707 Family
+	Boeing 707-120
+	Boeing 707-320
+	Boeing 717 Family
+	Boeing 717-100
+	Boeing 717-200
+	Boeing 720 Family
+	Boeing 720
+	Boeing 720B
+	Boeing 727 Family
+	Boeing 727-100
+	Boeing 727-200
+	Boeing 727-200 (Advanced)
+	Boeing 737 Family
+	Boeing 737-200
+	Boeing 737-200 (Advanced)
+	Boeing 737-300
+	Boeing 737-400
+	Boeing 737-500
+	Boeing 737-600
+	Boeing 737-700
+	Boeing 737-800
+	Boeing 737-900
+	Boeing 737-900ER
+	Boeing 737 10 MAX (737-10)
+	Boeing 747 Family
+	Boeing 747-100
+	Boeing 747-200
+	Boeing 747-300
+	Boeing 747-400
+	Boeing 747SP
+	Boeing 757 Family
+	Boeing 757-200
+	Boeing 757-200ER
+	Boeing 757-300
+	Boeing 767 Family
+	Boeing 767-200
+	Boeing 767-300
+	Boeing 767-300ER
+	Boeing 767-400ER
+	Boeing 777 Family
+	Boeing 777-200ER
+	Boeing 777-200LR
+	Boeing 777-300
+	Boeing 777-300ER
+	Boeing 787 Dreamliner Family
+	Boeing 787-8 Dreamliner
+	Boeing 787-9 Dreamliner
+	Boeing 787-10 Dreamliner
+	Boeing 80A-1
+	Boeing 95
+	Boeing B-17 Flying Fortress
+	Boeing B-29 Superfortress
+Bombardier	
+	Bombardier CRJ Family
+	Bombardier CRJ100
+	Bombardier CRJ200
+	Bombardier CRJ700
+	Bombardier CRJ900
+	Bombardier CRJ1000
+Bristol	
+	Bristol Britannia 305
+British Aerospace	
+	British Aerospace 146-200 (BAe 146-200)
+	British Aerospace Avro RJ70 (BAe Avro RJ70)
+	British Aerospace Avro RJ85 (BAe Avro RJ85)
+	British Aerospace Jetstream 31 (BAe Jetstream 31)
+	British Aerospace Jetstream 41 (BAe Jetstream 41)
+CASA	
+	CASA C-212 Aviocar
+Cessna	
+	Cessna C-145
+	Cessna C-34
+	Cessna UC-78
+Command-Aire	
+	Command-Aire 3-C-3-T 
+Consolidated	
+	Consolidated 20-A Fleetstar
+	
+	Consolidated B-24 Liberator
+Convair	
+	Convair 15
+	Convair 240
+	Convair 340
+	Convair 440
+	Convair 540
+	Convair 580
+	Convair 600
+	Convair 640
+	Convair 880
+	Convair 990
+Curtiss	
+	Curtiss C-46
+	Curtiss HS-1L
+	Curtiss HS-2L
+	Curtiss HS-3L
+	Curtiss JN (Jenny)
+	Curtiss Oriole (Model 17)
+	Curtiss Robin
+	Curtiss SB2C Helldiver
+	Curtiss-Wright Junior
+	Curtiss-Wright 6B Sedan
+de Havilland (Airco)	
+	de Havilland DH-106 Comet
+	de Havilland DH-4B
+de Havilland (Canada)	
+	de Havilland Canada DHC-6 Twin Otter 300
+	de Havilland Canada DHC-7 (Dash 7)
+	de Havilland Canada DHC-8-100 (Dash 8)
+Dornier	
+	Dornier Do 228-200
+Douglas	
+	Douglas A-20 Havoc
+	Douglas A-26B Invader
+	Douglas C-32A (military version DC-2)
+	Douglas C-39 (military version DC-2)
+	Douglas C-47 (cargo military version DC-3)
+	Douglas C-48 (military version DC-3)
+	Douglas C-49 (military version DC-3)
+	Douglas C-52 (military version DC-3)
+	Douglas C-52A (military version DC-3)
+	Douglas C-53 (military version DC-3)
+	Douglas C-54 (military version DC-4)
+	Douglas C-54B (military version DC-4)
+	Douglas C-68 (military version DC-3)
+	Douglas DC-2 Family
+	Douglas DC-2
+	Douglas DC-3 Family
+	Douglas DC-3
+	Douglas DC-4 Family
+	Douglas DC-4
+	Douglas DC-6 Family
+	Douglas DC-6
+	Douglas DC-6A
+	Douglas DC-6B
+	Douglas DC-7 Family
+	Douglas DC-7
+	Douglas DC-7B
+	Douglas DC-7C Seven Seas
+	Douglas / McDonnell Douglas DC-8 Family
+	DC-8-10
+	DC-8-30
+	DC-8-50
+	DC-8-60 (Super DC-8)
+	DC-8-70 (Super DC-8)
+	Douglas DST (sleeper version DC-3)
+	Douglas M-1 Mailplane
+	Douglas M-2 Mailplane
+	Douglas M-4 Mailplane
+	Douglas R4D (cargo military version DC-3, C-47)
+	Douglas R5D (military version DC-4, C-54)
+Embraer	
+	Embraer E-170
+	Embraer E-175
+	Embraer E-190
+	Embraer EMB-110 Bandeirante
+	Embraer EMB-120 Brasilia
+	Embraer ERJ-135
+	Embraer ERJ-145
+Fairchild Dornier	
+	Fairchild Dornier 328JET
+	Fairchild F-27
+	Fairchild FC-2
+	Fairchild Hiller FH-227
+	Fairchild (Swearingen) Metro Family
+Fokker	
+	Fokker F-10 Family
+	Fokker F-10 Super TriMotor
+	Fokker F-10A
+	Fokker F-14
+	Fokker F-27
+	Fokker F-32
+	Fokker F-7 Family
+	Fokker F-7
+	Fokker F-7A
+	Fokker Super Universal
+	Fokker Universal
+Ford	
+	Ford Tri-Motor Family
+	Ford 4-AT Tri-Motor
+	Ford 5-AT Tri-Motor
+General Aviation	
+	General Aviation GA-43 (Clark GA-43)
+Grumman	
+	Grumman G-21 Goose
+Hamilton	
+	Hamilton Metalplane H-47
+Huff-Daland	
+	Huff-Daland Duster Family
+Illyushin	
+	Ilyushin IL-62
+Laird	
+	Laird LC-B Commercial
+	Laird LC-RJ Speedwing
+Lockheed	
+	Lockheed Constellation Family
+	Lockheed 049 Constellation
+	Lockheed 1049 Constellation
+	Lockheed 1049G Super Constellation
+	Lockheed 149 Constellation
+	Lockheed 1649 Starliner
+	Lockheed 1649A Starliner
+	Lockheed 649A Constellation
+	Lockheed 749 Constellation
+	Lockheed 749A Constellation
+	Lockheed 10 Electra Family
+	Lockheed 10-A Electra
+	Lockheed 10-B Electra
+	Lockheed 12 Electra Junior Family
+	Lockheed 12-A Electra Junior 
+	Lockheed 12-B Electra Junior 
+	Lockheed 188 Electra II Family
+	Lockheed 188A Electra
+	Lockheed 188C Electra
+	Lockheed 14-H Super Electra
+	Lockheed 18 Lodestar
+	Lockheed 3 Air Express
+	Lockheed 8-A Sirius
+	Lockheed 9-D Orion
+	Lockheed C-130 Hercules (military version of L-100)
+	Lockheed L-100 Hercules Family
+	Lockheed L-100-10
+	Lockheed L-100-20
+	Lockheed L-1011 TriStar Family
+	Lockheed L-1011-1
+	Lockheed L-1011-200
+	Lockheed L-1011-250
+	Lockheed L-1011-500
+	Lockheed P-38 Lightning
+	Lockheed Vega Family
+	Lockheed 5C Vega
+Loening	
+	Loening C-2H Air Yacht
+Martin	
+	Martin 202 (Martin 2-0-2)
+	Martin 404 (Martin 4-0-4)
+	Martin M-130
+McDonnell Douglas	
+	McDonnell Douglas / Douglas DC-9 Family
+	DC-9-10
+	DC-9-30
+	DC-9-40
+	DC-9-50
+	McDonnell Douglas DC-10 Family
+	McDonnell Douglas DC-10-10
+	McDonnell Douglas DC-10-30
+	McDonnell Douglas DC-10-40
+	McDonnell Douglas MD-11
+	McDonnell Douglas MD-12
+	McDonnell Douglas MD-80 Family
+	McDonnell Douglas MD-82
+	McDonnell Douglas MD-88
+	McDonnell Douglas MD-90
+North American	
+	North American AT-6 Texan
+	North American P-51 Mustang
+	North American Super Sonic Transport (SST)
+Piper	
+	Piper Navajo
+Pitcairn	
+	Pitcairn PA-6 Sport Mailwing
+Ryan	
+	Ryan M-1
+	Ryan M-2
+	Ryan NYP
+Saab	
+	Saab 340 (Saab-Fairchild SF 340)
+Short	
+	Short 330 (SD3-30)
+	Short 360 (SD3-60)
+Sikorsky	
+	Sikorsky S-38 Amphibion Family
+	Sikorsky S-38A Amphibion
+	Sikorsky S-38B Amphibion
+	Sikorsky S-40 Clipper
+	Sikorsky S-41 Amphibion
+	Sikorsky S-42 Clipper
+	Sikorsky S-61 helicopter
+	Sikorsky VS-44A
+Standard	
+	Standard JR-1B
+Stearman	
+	
+	Stearman 4-D Family
+	Stearman 4-D Junior Speedmail
+	Stearman 4-DM Junior Speedmail
+	Stearman C-3 Family
+	Stearman C-3B Special
+	Stearman C-3B Sport Commercial
+	Stearman C-3MB
+	Stearman C-3R Business Speedster
+	Stearman Model 75 (Kaydet) Family
+	Stearman N2S-4 Kaydet
+	Stearman N2S-5 Kaydet
+	Stearman PT-13D Kaydet
+	Stearman PT-17 Kaydet
+Stinson	
+	Stinson Model A Tri-Motor
+	Stinson Airliner Family
+	Stinson SM-6000B Airliner (Model T)
+	Stinson Model U Airliner
+	Stinson Detroiter Family
+	Stinson SB-1 Detroiter
+	Stinson SM-1 Detroiter
+	Stinson Junior Family
+	Stinson R Junior
+	Stinson S Junior
+	Stinson SM-2AB Junior
+	Stinson SM-7B Junior
+	Stinson SM-8A Junior
+	Stinson SR Reliant Family
+	Stinson SR-10C Reliant
+	Stinson SR-5 Reliant Special
+	Stinson SR-5A Reliant Special
+	Stinson SR-6 Reliant
+	Stinson SR-7B Reliant
+	Stinson SR-8B Reliant
+	Stinson SR-8CM Reliant
+	Stinson SR-8E Reliant
+	Stinson SR-9 Reliant
+	Stinson SR-9D Reliant
+	Stinson SM-5
+	Stinson SM-5A
+	Stinson SM-5E
+Sukhoi	
+	Sukhoi Superjet 100
+	
+Thomas-Morse	
+	Thomas Morse S-4 Scout
+Travel Air	
+	Travel Air 2000
+	Travel Air 4000
+	Travel Air 6000 Family
+	Travel Air A-6000-A
+	Travel Air S-6000-B
+Vickers	
+	Vickers Viscount Family
+	Vickers Viscount 630
+	Vickers Viscount 745D
+	Vickers Viscount 798D
+	Vickers Vanguard
+	Vickers VC10
+Vultee	Vultee Vengeance Family
+Waco	
+	Waco 9 Family
+	Waco 10 Family
+	Waco 10W
+	Waco 125
+	Waco EGC-8
+	Waco EQC-6
+	Waco JYM
+Individual Planes	
+	1903 Wright Flyer (Airplane)
+	Air Force One
+Aircraft Engines	
+	Allison T56 A 1 (501 D13)
+	General Electric CF6 80
+	General Electric CJ 805 3B
+	IAE International Aero Engines V2500
+	Liberty L-12
+	Pratt & Whitney JT3D 3
+	Pratt & Whitney JT8D
+	Pratt & Whitney JT8D 15
+	Pratt & Whitney JT8D 219
+	Pratt & Whitney R 2800 Double Wasp
+	Rolls Royce RB211
+	Wright Cyclone 1831

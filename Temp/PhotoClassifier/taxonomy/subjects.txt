@@ -1,0 +1,294 @@
+Subject (L1)	Subject (L2)	Synonyms
+Aircraft Action	 	 
+	Air-to-Air	 
+	Aircraft Catering	 
+	Aircraft Cleaning	 
+	Aircraft Fueling	 
+	Aircraft Maintenance	 
+	Aircraft Towing	 
+	Deicing	anti ice; ice prevention
+	In-Flight	flying
+	Landing	 
+	On the Ramp (Apron)	 
+	Push Back	 
+	Takeoff	 
+	Taxiing	 
+Accessibility	 	 
+	Blind / Low Vision	 
+	Disability / Disabled	 
+	Electric Cart	 
+	Hard of Hearing	 
+	Intellectual Disability	 
+	Service Animal	 
+	Wheelchair Use	 
+Aircraft Restoration	 	 
+Aircraft Terms	 	 
+	Aircraft Exterior	 
+	Aircraft Interior	 
+	Airframe	 
+	Baggage Bin	 
+	Belly	 
+	Cabin	 
+	Cargo Bin	 
+	Door	 
+	Emergency Exit	 
+	Engine	 
+	Flight Controls	 
+	Flight Deck (Cockpit)	 
+	Fuselage	 
+	Galley	 
+	In-Flight Entertainment System (IFE)	 
+	Lavatory	 
+	Landing Gear	 
+	Lounge (onboard)	 
+	Passenger Service Unit (PSU)	 
+	Propeller	 
+	Seat	 
+	Special Livery	 
+	Tail	 
+	Tire	 
+	Weather Radar	 
+	Window	 
+	Wheel	 
+	Wing	 
+Airport Facility	 	 
+	Airport Exterior	 
+	Airport Interior	 
+	Apron (Ramp)	tarmac
+	Baggage Claim	 
+	Bag Room	 
+	Cargo Facility	 
+	Check-in	 
+	Control Tower	 
+	Customs	 
+	Flight Information Display Screen (FIDS)	 
+	Fuel Farm	 
+	Gate (Gatehouse)	 
+	Gate Information Display Screen (GIDS)	 
+	Ground Transportation	 
+	Hangar	 
+	Jet Bridge	Jetway; boarding bridge
+	Kiosk	 
+	Lobby	 
+	Lounge (airport)	 
+	Runway	 
+	Security Checkpoint	security screening
+	Size Wise (Delta bag measurement system)	 
+	Taxiway	 
+	Terminal	 
+Airline Alliances and Partnerships	 	 
+	Atlantic Excellence Alliance 	 
+	Global Excellence Alliance 	 
+	SkyTeam	 
+Air Traffic Control (ATC)	 	 
+Associations	 	 
+	Delta Clipped Wings	 
+	Delta Community Credit Union	 
+	Delta Golden Wings	 
+	Delta Pioneers	 
+Awards / Recognition	 	 
+Baggage (luggage)	 	 
+	Checked	 
+	Carry-on	 
+	Bag Cart	 
+CEOs	 	 
+	C.E. Woolman	 
+	Charles Dolson 	 
+	W.T. Beebe 	 
+	Dave Garrett 	 
+	Ron Allen 	 
+	Leo Mullin 	 
+	Jerry Grinstein 	 
+	Richard Anderson  	 
+	Ed Bastian 	 
+Class of service / Product	 	 
+	Business class	 
+	Economy class	coach class
+	First class	 
+	Delta Comfort Plus	 
+	Delta One	 
+	Premium Select	 
+Crop-Dusting	 	 
+Employee Programs	 	 
+	Business Resource Group (BRG)	employee resource group
+	Delta Board Council (DBC)	 
+	Employee Assistance Programs	 
+	Employee Service Center (ESC)	 
+	Employee Recognition	 
+Entertainment	 	 
+Events		 
+	DFM - Airline Collectibles Show	 
+	DFM - Donor Party	 
+	DFM - Golf Tournament	 
+     	DFM - Hops in the Hangar	 
+	DFM - Photos with Santa	 
+	DFM - Surplus Sale	 
+	Aircraft Delivery	 
+	Anniversary	 
+	Blood Drive	 
+	BLVD Bash (formerly Block Party)	 
+	Breast Cancer Research Foundation (BCRF)	 
+	Chairman's Club Gala	 
+	Children's Miracle Network	 
+	COVID-19 (Coronavirus) Pandemic 2020	 
+	Employee Appreciation Day (Profit Sharing)	 
+	Golf Tournament	 
+	Graduation	 
+	Habitat for Humanity	 
+	Inauguration	 
+	Investor Day	 
+	KaBoom!	 
+	LEAD Leadership Meeting	 
+	Media Day	 
+	Pride	 
+	Relay for Life	 
+	Retirement	 
+	Town Hall	 
+	Velvet	 
+Facilities	 	 
+	City Ticket Office (CTO)	 
+	Crown Room Club (CRC)	 
+	Customer Engagement Center (CEC) (Reservation Center)	 
+	General Offices (Monroe, La.)	 
+	Sky Club	 
+	Technical Operations Center (TOC)	 
+	Travel Agency	 
+	World Headquarters (General Offices) Atlanta	 
+Flight Simulator	 	 
+Food and Beverage	 	 
+Headshot	 	 
+Holiday	 	 
+In-flight Service	 	 
+Olympics	 	 
+Passenger	 	 
+	Arriving / Arrival / Deplaning	 
+	Departing / Departure / Boarding	 
+	Business Traveler	 
+	Leisure Traveler	 
+	Celebrity	 
+	Children	kids
+	Couple	 
+	Family	 
+	Group Travel	 
+	Military Traveler	 
+	Nonrevenue (NRSA)	non-rev; non-revving
+	Single Traveler	 
+Routes	 	 
+Shareowner	 	 
+SkyMiles (formerly Frequent Flyer)	 	 
+Technology	 	 
+Training	 	 
+	Training / Learning Activity	 
+	Class Photos	 
+Uniform	 	 
+Weather	 	 
+	Clouds	 
+	Fog	 
+	Hurricane	 
+	Ice/Icy	 
+	Rainy	 
+	Rainbow	 
+	Snowy	 
+	Stormy	 
+	Sunny	 
+	Volcano	 
+	Windy	 
+Setting / Destination / Attraction	 	 
+	Amusement Park	 
+	Arena (sports building)	 
+	Beach	 
+	Cabin	 
+	Castle	 
+	Church	 
+	City	 
+	Ferris Wheel	 
+	Hotel	 
+	Lighthouse	 
+	Mosque	 
+	National Park	 
+	Ocean	 
+	Pyramid	 
+	River	 
+	Shrine	 
+	Stadium	 
+	Tower	 
+	Village	 
+	Windmill	 
+Season	 	 
+	Fall	 
+	Spring	 
+	Summer	 
+	Winter	 
+Vehicle	 	 
+	Bus	 
+	Car	 
+	Truck	 
+	Tug	tow tractor
+	Boat	 
+	SUV	 
+	Van	 
+Workgroup	 	 
+	DFM - Board	 
+	DFM - Donors	 
+	DFM - Event	 
+	DFM - Sponsors	 
+	DFM - Staff	 
+	DFM - Vendors	 
+	DFM - Visitors	 
+	DFM – Volunteers	 
+	ACS Above Wing	 
+	ACS Below Wing	 
+	Administration	 
+	Airport Customer Service (ACS)	 
+	Aviation Maintenance Technician (AMT)	 
+	Baggage	 
+	Board of Directors	 
+	Cabin Cleaner	 
+	Cargo / Ramp	 
+	Cargo Agent	 
+	Charters	 
+	Community Engagement	 
+	Corporate Communications	 
+	Corporate Safety, Security & Compliance	 
+	Delta Global Services (DGS)	 
+	Delta Flight Museum	 
+	Delta Flight Products	 
+	Delta Shuttle	 
+	Delta Technology (DT)	 
+	Dispatcher	 
+	Dobbs House	flight kitchen
+	Executive	 
+	Finance	 
+	Flight Attendant	stewardess
+	Flight Crew	 
+	Flight Operations	 
+	Fuel Management	 
+	Gate Agent	 
+	Gate Gourmet	flight kitchen
+	Government Affairs	 
+	Ground Support Equipment (GSE)	 
+	Human Resources	 
+	In-Flight Service	 
+	Information Technology (IT)	 
+	International and Alliances	 
+	Investor Relations	 
+	Legal	 
+	Marketing	 
+	Material Services	 
+	Medical Team	 
+	Meteorologist	 
+	Network Planning	 
+	Operations & Customer Center (OCC)	 
+	Onboard Products Team	Commissary 
+	Passenger Service Agent (PSA / Red Coat)	 
+	Pilot	 
+	Radio Operator	 
+	Radio / Teletype Communications	 
+	Ramp Agent	 
+	Reservation Sales	 
+	Sales	 
+	Security	 
+	Skycap	 
+	Technical Operations (TechOps)	 
+	Ticket Agent	 
+	Volunteer	 

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Categories</title>
+    <script>
+        /***********************************************************************
+         * 1. HUMAN EDITABLE DATA HERE
+         * To add new items, just add a new line below. No quotes or ending commas!
+         * To sort, copy all data rows to Word or Excel, sort, copy back here
+         ***********************************************************************/
+        const Data = `
+// Enter data below
+// Format: Major Category | Sub1 | Sub2 | Sub3 | Keyword (; separated)| Notes
+
+ACS (Airport Customer Service)|Above Wing||||Customer Facing
+ACS (Airport Customer Service)|Below Wing|||Cargo;Cargo Employees|should be "Employees-Cargo"??
+ACS (Airport Customer Service)|Below Wing|||Fueling;Ground Service Equipment (GSE);Ramp; Ramp Employees|Ramp is ??
+ACS (Airport Customer Service)|Below Wing|||Tower;Tower Employees|Tower is Air Trafic Control?
+ACS (Airport Customer Service)|Below Wing|Uniforms||Cargo Uniforms;Ramp Uniforms|Dark Blue Pants / Light Blue Shirts
+Aircraft|Accidents
+Aircraft|Boeing 727|||727-100;727-200;727 Interior
+Aircraft|Boeing 727|Special Livery||Bicentennial
+Aircraft|Boeing 737|||737-200;737-300;737-400;737-500;737-600;737-700;737-800;737-900;737-Max 10;737 Interior
+Aircraft|Boeing 737|Special Livery||Power Puff
+Aircraft|Boeing 747|||747-200;747-400;747 Interior
+Aircraft|Boeing 757|||757-200;757-300;757 Interior
+Aircraft|Boeing 757|Special Livery||BCRF (Red Ribbon)|N610DL 757-200
+Aircraft|Boeing 757|Special Livery||Mariano Rivera #42|N702TW 757-200
+Aircraft|Boeing 757|Special Livery||SkyTeam|N659DL 757-200
+Aircraft|Boeing 767|||767-200;767-300;767-400;767 Interior
+Aircraft|Boeing 767|Special Livery||BCRF (Red Ribbon);BCRF (Pink)|N845MH 767-400
+Aircraft|Boeing 767|Special Livery||Habitat For Humanity|N171DZ 767-300
+Aircraft|Boeing 767|Special Livery||Spirit of Delta (767 on tail);Spirit of Delta (original);Spirit of Delta (1996 Olympics);Spirit of Delta (75th Anniv.);Spirit of Delta (Colors in Motion)|N102DA 767-200
+Aircraft|Cockpit|||Pilots in Cockpit|see also "Crew"
+Aircraft|CRJ|||Delta Connection;ASA;Comair|see also "Delta Connection"
+Aircraft|Huff-Daland|||Crop Dusting
+Aircraft|Interiors||||Use when aircraft model can not be determined
+Aircraft|Simulator|||Pilots in Simulator|see also "Crew"
+Catering
+Chicago & Southern||||C&S
+City Ticket Office||||CTO
+Conferences
+Credit Union
+Crew||||Pilots;Flight Attendants;Ground Crew
+Delta Connection||||ASA;Comair|see also "Aircraft-CRJ"
+Delta DASH|||||Should be under "ACS-Below Wing-Cargo"?
+Delta Express
+Equipment||||Emergency Equipment
+Executives||||Officers;Leaders;Board of Directors
+Facilities||||Airports;General Office
+Facilities|Airports|ATL|ATL Station
+Facilities|General Office|Lunch
+Finance
+IFS (In Flight Service)||||IFS Training;Flight Attendants|see also "Crew"
+IT (Information Technology)
+Legal
+Marketing||||Advertising;Promotional;Stories
+Mechanics
+Northeast
+Northwest
+OCC (Operational Control Center)||||Flight Planning;Flight Control;IRF Room;Radar;Meteorology
+Pan Am
+PATCO Strike
+People At Work|||||General catch-all if group is not known
+RES (Reservations)|||||If city is known then state it
+Route Maps
+Song
+Tech Ops||||Jet Base;Shops & Offices
+Tech Ops||Uniforms|||1980's dark brown pants / beige tops
+TOC (Technical Operations Center)
+Training
+Travel Agents
+Uniforms|||||search for uniforms
+Western
+
+
+// Do not change anything below this line`;
+// Do not change anything below this line`;
+        /***********************************************************************
+         * END OF DATA SECTION - You don't need to look at anything below this line!
+         ***********************************************************************/
+    </script>
+    <style>
+        /* --- SCREEN ONLY STYLES --- */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background-color: #f5f5f7; color: #333; font-size: 8pt; }
+        h2 { color: #1d1d1f; margin-bottom: 5px; font-size: 1.4em; }
+        .subtitle { color: #86868b; margin-top: 0; margin-bottom: 5px; font-size: 0.95em; }
+        .instruction-text { font-style: italic; color: #86868b; font-size: 0.9em; font-weight: 500; margin-bottom: 25px; }
+        
+        .controls { margin-bottom: 15px; display: flex; align-items: center; background: white; padding: 10px 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .search-container { display: flex; align-items: center; gap: 8px; width: 100%; }
+        .search-label { font-weight: 600; font-size: 1em; color: #1d1d1f; white-space: nowrap; }
+        
+        .input-wrapper { position: relative; display: inline-flex; align-items: center; max-width: 100%; }
+        input[type="text"] { width: 480px; max-width: 100%; padding: 6px 35px 6px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 8pt; box-sizing: border-box; }
+        input[type="text"]:focus { outline: none; border-color: #0071e3; }
+        
+        .clear-btn { position: absolute; right: 12px; cursor: pointer; color: #86868b; font-weight: bold; font-size: 1em; user-select: none; display: none; z-index: 10; }
+        .clear-btn:hover { color: #1d1d1f; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); table-layout: fixed; }
+        th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee; word-wrap: break-word; vertical-align: top; font-size: 8pt; }
+        th { background-color: #f5f5f7; font-weight: 600; cursor: pointer; user-select: none; color: #1d1d1f; position: relative; }
+        th:hover { background-color: #e8e8ed; }
+        
+        th.sort-asc::after { content: ' ↑'; font-size: 0.9em; color: #0071e3; }
+        th.sort-desc::after { content: ' ↓'; font-size: 0.9em; color: #0071e3; }
+        th:not(.sort-asc):not(.sort-desc)::after { content: ' ↕'; font-size: 0.9em; color: #bfbfbf; }
+        
+        tr:hover { background-color: #fbfbfd; }
+        
+        .badge-container { display: flex; flex-wrap: wrap; gap: 4px; }
+        .keyword-badge { padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-weight: 500; display: inline-block; word-break: break-word; max-width: 100%; box-sizing: border-box; cursor: pointer; }
+        
+        /* Standard user keywords styling (Black text on Light Blue) */
+        .badge-standard { background: #e1f5fe; color: #000000; }
+        .badge-standard:hover { background: #b3e5fc; }
+        
+        /* Injected categories styling (Black text on Light Yellow/Amber) */
+        .badge-injected { background: #fff9c4; color: #000000; }
+        .badge-injected:hover { background: #fff59d; }
+        
+        .highlight { background-color: #f0f0f0; font-weight: 500; }
+
+        /* Multi-item vertical list block styling inside aggregated cells */
+        .grouped-list { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+        .grouped-item { display: block; line-height: 1.2; min-height: 1.2em; }
+        .grouped-item:not(:last-child) { border-bottom: 1px dashed #e5e5ea; padding-bottom: 3px; margin-bottom: 1px; }
+        .grouped-item-blank { color: #bfbfbf; font-style: italic; }
+
+        td.notes-col { font-size: 6pt; }
+
+        /* --- PRINT ONLY STYLES --- */
+        @media print {
+            body { background-color: #fff; margin: 0; padding: 0; font-size: 8pt; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            h2 { font-size: 12pt; margin-top: 0; margin-bottom: 2px; }
+            .subtitle { font-size: 7pt; margin-bottom: 4px; }
+            
+            .instruction-text, .controls, th::after { display: none !important; }
+            
+            table { box-shadow: none; border: 1px solid #000; border-radius: 0; table-layout: fixed; }
+            th { background-color: #f0f0f0 !important; color: #000; font-weight: normal !important; border-bottom: 2px solid #000; font-size: 8pt; }
+            th.print-sorted-header { font-weight: bold !important; }
+            th, td { padding: 4px 5px !important; border-bottom: 1px solid #ccc; vertical-align: top; font-size: 8pt; }
+            
+            td.notes-col { font-size: 6pt !important; }
+            .grouped-item:not(:last-child) { border-bottom: 1px dotted #000; }
+            
+            .keyword-badge { border: 1px solid #ccc; padding: 2px 4px !important; font-size: 0.9em !important; font-weight: 500 !important; cursor: default !important; display: inline-block !important; }
+            .badge-standard { background: #e1f5fe !important; color: #000000 !important; }
+            .badge-injected { background: #fff9c4 !important; color: #000000 !important; }
+            
+            .highlight { background-color: transparent !important; font-weight: normal !important; }
+            tr { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Image Categories</h2>
+    <p class="subtitle">Edit the page source to add items. Click on column header to sort.</p>
+    <div class="controls">
+        <div class="search-container">
+            <span class="search-label">Search:</span>
+            <div class="input-wrapper">
+                <input type="text" id="searchBar" onkeyup="handleSearchLookup()" placeholder="Type to filter list..." inputmode="search">
+                <span id="clearIcon" class="clear-btn" onclick="clearSearch()">✕</span>
+            </div>
+        </div>
+    </div>
+
+    <table id="dataTable">
+        <thead id="tableHeader">
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+
+    <script>
+        let currentSortColumn = 'col1';
+        let currentSortDirection = 'asc';
+
+        function updateHeaderClasses() {
+            for (let i = 1; i <= 6; i++) {
+                let th = document.getElementById('th-col' + i);
+                if (th) th.classList.remove('print-sorted-header', 'sort-asc', 'sort-desc');
+            }
+            
+            let activeHeader = document.getElementById('th-' + currentSortColumn);
+            if (activeHeader) {
+                activeHeader.classList.add('print-sorted-header');
+                if (currentSortDirection === 'asc') {
+                    activeHeader.classList.add('sort-asc');
+                } else {
+                    activeHeader.classList.add('sort-desc');
+                }
+            }
+        }
+
+        function setSort(columnName) {
+            if (currentSortColumn === columnName) {
+                currentSortDirection = (currentSortDirection === 'asc') ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = columnName;
+                currentSortDirection = 'asc';
+            }
+            renderTable();
+        }
+
+        function handleSearchLookup() {
+            let searchBar = document.getElementById('searchBar');
+            let clearIcon = document.getElementById('clearIcon');
+            
+            if (searchBar.value.length > 0) {
+                clearIcon.style.display = 'block';
+            } else {
+                clearIcon.style.display = 'none';
+            }
+            renderTable();
+        }
+
+        function clearSearch() {
+            let searchBar = document.getElementById('searchBar');
+            searchBar.value = '';
+            document.getElementById('clearIcon').style.display = 'none';
+            searchBar.focus();
+            renderTable();
+        }
+
+        function clickToFilterKeyword(keywordValue) {
+            currentSortColumn = 'col1';
+            currentSortDirection = 'asc';
+            
+            let searchBar = document.getElementById('searchBar');
+            searchBar.value = keywordValue;
+            handleSearchLookup();
+            searchBar.focus();
+        }
+
+        // Helper logic to convert individual arrays from unique row structures into cleanly blocked elements
+        function renderCellFromPathsList(pathsArray) {
+            if (pathsArray.length <= 1) {
+                let singleVal = pathsArray[0] || "";
+                return singleVal === "" ? '<span class="grouped-item-blank">—</span>' : singleVal;
+            }
+            
+            let html = '<div class="grouped-list">';
+            pathsArray.forEach(item => {
+                let displayVal = item === "" ? '<span class="grouped-item-blank">—</span>' : item;
+                html += `<div class="grouped-item">${displayVal}</div>`;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function renderTable() {
+            let filterText = document.getElementById('searchBar').value.toLowerCase();
+            let thead = document.getElementById('tableHeader');
+            let tbody = document.getElementById('tableBody');
+            
+            tbody.innerHTML = "";
+
+            if (currentSortColumn === 'col5') {
+                thead.innerHTML = `
+                    <tr>
+                        <th id="th-col1" style="width: 20%;" onclick="setSort('col1')">Major Category</th>
+                        <th id="th-col2" style="width: 18%;" onclick="setSort('col2')">Sub1</th>
+                        <th id="th-col3" style="width: 18%;" onclick="setSort('col3')">Sub2</th>
+                        <th id="th-col4" style="width: 18%;" onclick="setSort('col4')">Sub3</th>
+                        <th id="th-col5" style="width: 26%;" onclick="setSort('col5')">Keywords</th>
+                    </tr>
+                `;
+            } else {
+                thead.innerHTML = `
+                    <tr>
+                        <th id="th-col1" style="width: 15%;" onclick="setSort('col1')">Major Category</th>
+                        <th id="th-col2" style="width: 12%;" onclick="setSort('col2')">Sub1</th>
+                        <th id="th-col3" style="width: 12%;" onclick="setSort('col3')">Sub2</th>
+                        <th id="th-col4" style="width: 12%;" onclick="setSort('col4')">Sub3</th>
+                        <th id="th-col5" style="width: 15%;" onclick="setSort('col5')">Keywords</th>
+                        <th id="th-col6" style="width: 34%;" onclick="setSort('col6')">Notes (applies to all Keywords)</th>
+                    </tr>
+                `;
+            }
+
+            let processedData = [];
+            let lines = Data.split('\n');
+            let keywordGroups = {};
+
+            lines.forEach(line => {
+                let trimmedLine = line.trim();
+                if (!trimmedLine || trimmedLine.startsWith('//')) return; 
+                
+                let parts = trimmedLine.split('|');
+                
+                let c1 = parts[0] ? parts[0].trim() : "";
+                let c2 = parts[1] ? parts[1].trim() : "";
+                let c3 = parts[2] ? parts[2].trim() : "";
+                let c4 = parts[3] ? parts[3].trim() : "";
+                let keywordsString = parts[4] ? parts[4].trim() : "";
+                let c6 = parts[5] ? parts[5].trim() : "";
+
+                let standardKeywords = keywordsString ? keywordsString.split(';').map(k => k.trim()).filter(k => k) : [];
+                
+                let structuralCategories = [];
+                [c1, c2, c3, c4].forEach(cat => {
+                    if (cat && !standardKeywords.some(sk => sk.toLowerCase() === cat.toLowerCase())) {
+                        structuralCategories.push(cat);
+                    }
+                });
+
+                let masterKeywordsList = [...structuralCategories, ...standardKeywords];
+
+                if (currentSortColumn === 'col5') {
+                    // Unique Full Path tracking mechanism
+                    let fullPathString = `${c1}:::${c2}:::${c3}:::${c4}`;
+
+                    if (masterKeywordsList.length === 0) {
+                        let fallbackKey = "";
+                        if (!keywordGroups[fallbackKey]) {
+                            keywordGroups[fallbackKey] = { uniquePaths: new Set(), displayKeywords: [], searchFallbackPool: [] };
+                        }
+                        keywordGroups[fallbackKey].uniquePaths.add(fullPathString);
+                        keywordGroups[fallbackKey].searchFallbackPool.push(masterKeywordsList.join(" "));
+                    } else {
+                        masterKeywordsList.forEach(kw => {
+                            let lookupKey = kw.toLowerCase();
+                            let isCategory = structuralCategories.includes(kw);
+                            
+                            if (!keywordGroups[lookupKey]) {
+                                keywordGroups[lookupKey] = {
+                                    uniquePaths: new Set(),
+                                    displayKeywords: [{ text: kw, isInjected: isCategory }],
+                                    searchFallbackPool: []
+                                };
+                            }
+                            keywordGroups[lookupKey].uniquePaths.add(fullPathString);
+                            keywordGroups[lookupKey].searchFallbackPool.push(masterKeywordsList.join(" "));
+                        });
+                    }
+                } else {
+                    let normalDisplayArray = [];
+                    structuralCategories.forEach(k => normalDisplayArray.push({ text: k, isInjected: true }));
+                    standardKeywords.forEach(k => normalDisplayArray.push({ text: k, isInjected: false }));
+
+                    processedData.push({
+                        col1: [c1], col2: [c2], col3: [c3], col4: [c4], 
+                        col5: keywordsString, 
+                        col6: [c6],
+                        displayKeywords: normalDisplayArray,
+                        searchFallbackPool: masterKeywordsList.join(" ").toLowerCase()
+                    });
+                }
+            });
+
+            // FIXED: Process aggregated unique path sets into synchronized parallel lists
+            if (currentSortColumn === 'col5') {
+                Object.keys(keywordGroups).forEach(key => {
+                    let group = keywordGroups[key];
+                    
+                    let combinedRowsArray = Array.from(group.uniquePaths);
+                    let listC1 = [], listC2 = [], listC3 = [], listC4 = [];
+
+                    combinedRowsArray.forEach(pathStr => {
+                        let splitSegments = pathStr.split(':::');
+                        listC1.push(splitSegments[0]);
+                        listC2.push(splitSegments[1]);
+                        listC3.push(splitSegments[2]);
+                        listC4.push(splitSegments[3]);
+                    });
+
+                    processedData.push({
+                        col1: listC1, col2: listC2, col3: listC3, col4: listC4,
+                        col5: key, col6: [], 
+                        displayKeywords: group.displayKeywords,
+                        searchFallbackPool: (key + " " + group.searchFallbackPool.join(" ")).toLowerCase()
+                    });
+                });
+            }
+
+            // Sorting Engine
+            processedData.sort((a, b) => {
+                if (currentSortColumn === 'col5') {
+                    let valA = a.col5.toLowerCase();
+                    let valB = b.col5.toLowerCase();
+                    if (!valA && valB) return 1;  
+                    if (valA && !valB) return -1; 
+                    return valA.localeCompare(valB);
+                }
+
+                if (currentSortColumn === 'col1') {
+                    let stringA = `${a.col1[0]} | ${a.col2[0]} | ${a.col3[0]} | ${a.col4[0]}`.toLowerCase();
+                    let stringB = `${b.col1[0]} | ${b.col2[0]} | ${b.col3[0]} | ${b.col4[0]}`.toLowerCase();
+                    return currentSortDirection === 'asc' ? stringA.localeCompare(stringB) : stringB.localeCompare(stringA);
+                } else {
+                    let valA = a[currentSortColumn][0].toLowerCase();
+                    let valB = b[currentSortColumn][0].toLowerCase();
+                    return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                }
+            });
+
+            // Filtering and UI Display Engine
+            processedData.forEach(row => {
+                let matchesSearch = 
+                    row.col1.join(" ").toLowerCase().includes(filterText) ||
+                    row.col2.join(" ").toLowerCase().includes(filterText) ||
+                    row.col3.join(" ").toLowerCase().includes(filterText) ||
+                    row.col4.join(" ").toLowerCase().includes(filterText) ||
+                    row.searchFallbackPool.includes(filterText) ||
+                    (row.col6 && row.col6.join(" ").toLowerCase().includes(filterText));
+
+                if (!matchesSearch) return;
+
+                let tr = document.createElement('tr');
+                
+                let c1Class = currentSortColumn === 'col1' ? 'class="highlight"' : '';
+                let c2Class = currentSortColumn === 'col2' ? 'class="highlight"' : '';
+                let c3Class = currentSortColumn === 'col3' ? 'class="highlight"' : '';
+                let c4Class = currentSortColumn === 'col4' ? 'class="highlight"' : '';
+                let c5Class = currentSortColumn === 'col5' ? 'class="highlight"' : '';
+                let c6Class = currentSortColumn === 'col6' ? 'class="highlight notes-col"' : 'class="notes-col"';
+
+                let keywordContent = "";
+                if (row.displayKeywords.length > 0) {
+                    keywordContent = '<div class="badge-container">';
+                    row.displayKeywords.forEach(kwObj => {
+                        let cleanKw = kwObj.text.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+                        let typeClass = kwObj.isInjected ? 'badge-injected' : 'badge-standard';
+                        keywordContent += `<span class="keyword-badge ${typeClass}" onclick="clickToFilterKeyword('${cleanKw}')">${kwObj.text}</span>`;
+                    });
+                    keywordContent += '</div>';
+                }
+
+                if (currentSortColumn === 'col5') {
+                    // FIXED: Renders parallel structural lists that track each path as single elements
+                    tr.innerHTML = `
+                        <td ${c1Class}>${renderCellFromPathsList(row.col1)}</td>
+                        <td ${c2Class}>${renderCellFromPathsList(row.col2)}</td>
+                        <td ${c3Class}>${renderCellFromPathsList(row.col3)}</td>
+                        <td ${c4Class}>${renderCellFromPathsList(row.col4)}</td>
+                        <td ${c5Class}>${keywordContent}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td ${c1Class}>${row.col1[0]}</td>
+                        <td ${c2Class}>${row.col2[0]}</td>
+                        <td ${c3Class}>${row.col3[0]}</td>
+                        <td ${c4Class}>${row.col4[0]}</td>
+                        <td ${c5Class}>${keywordContent}</td>
+                        <td ${c6Class}>${row.col6[0] || ""}</td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+
+            updateHeaderClasses();
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>

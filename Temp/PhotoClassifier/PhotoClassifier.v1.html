@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo & Slide Classifier</title>
+
+<style>
+:root {
+    --navy: #17324d;
+    --blue: #27648a;
+    --light-blue: #eaf3f8;
+    --green: #247a52;
+    --light-green: #eaf6ef;
+    --amber: #a66a00;
+    --light-amber: #fff5df;
+    --gray: #66727d;
+    --light-gray: #f4f6f8;
+    --border: #d5dce2;
+    --text: #1d252c;
+    --white: #ffffff;
+    --danger: #a33b3b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background: #f2f4f6;
+}
+
+header {
+    background: var(--navy);
+    color: white;
+    padding: 18px 24px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 23px;
+}
+
+header .subtitle {
+    margin-top: 5px;
+    opacity: .85;
+    font-size: 13px;
+}
+
+.app {
+    display: flex;
+    min-height: calc(100vh - 80px);
+}
+
+.sidebar {
+    width: 220px;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    padding: 15px 10px;
+}
+
+.nav-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 6px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.nav-button:hover,
+.nav-button.active {
+    background: var(--light-blue);
+    color: var(--navy);
+    font-weight: bold;
+}
+
+.main {
+    flex: 1;
+    padding: 25px;
+    max-width: 1300px;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+
+h2 {
+    margin-top: 0;
+    color: var(--navy);
+}
+
+h3 {
+    color: var(--navy);
+}
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+    resize: vertical;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+button.primary {
+    background: var(--blue);
+    color: white;
+    border: 0;
+    border-radius: 7px;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.primary:hover {
+    background: #1d5272;
+}
+
+button.secondary {
+    background: white;
+    color: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 11px 18px;
+    cursor: pointer;
+}
+
+button.danger {
+    background: #fff;
+    color: var(--danger);
+    border: 1px solid #e0baba;
+    border-radius: 7px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.status {
+    padding: 12px 14px;
+    border-radius: 7px;
+    margin-bottom: 15px;
+}
+
+.status.ok {
+    background: var(--light-green);
+    color: var(--green);
+}
+
+.status.warning {
+    background: var(--light-amber);
+    color: var(--amber);
+}
+
+.status.error {
+    background: #fceeee;
+    color: var(--danger);
+}
+
+.taxonomy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.taxonomy-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--light-gray);
+}
+
+.taxonomy-card strong {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 7px;
+}
+
+.stat {
+    color: var(--gray);
+    font-size: 13px;
+}
+
+.result-section {
+    margin-top: 22px;
+}
+
+.result {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 8px 0;
+    padding: 13px;
+    background: white;
+}
+
+.result.strong {
+    border-left: 5px solid var(--green);
+}
+
+.result.possible {
+    border-left: 5px solid #d6a127;
+}
+
+.result.low {
+    border-left: 5px solid #aeb7be;
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.result-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.confidence {
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.confidence.strong {
+    color: var(--green);
+}
+
+.confidence.possible {
+    color: var(--amber);
+}
+
+.confidence.low {
+    color: var(--gray);
+}
+
+.path {
+    color: var(--gray);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.reason {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #39444d;
+}
+
+.result-actions {
+    margin-top: 10px;
+}
+
+.result-actions label {
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.selected-list {
+    margin-top: 15px;
+}
+
+.selected-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--light-blue);
+    color: var(--navy);
+    padding: 8px 10px;
+    border-radius: 20px;
+    margin: 4px;
+    font-size: 13px;
+}
+
+.folder-label {
+    font-size: 19px;
+    font-weight: bold;
+    padding: 17px;
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    word-break: break-word;
+}
+
+.history-item {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.history-item:last-child {
+    border-bottom: 0;
+}
+
+.small {
+    font-size: 12px;
+    color: var(--gray);
+}
+
+.file-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 15px;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.file-row:last-child {
+    border-bottom: 0;
+}
+
+input[type="file"] {
+    font-size: 13px;
+}
+
+footer {
+    margin-top: 30px;
+    color: var(--gray);
+    font-size: 12px;
+}
+
+@media (max-width: 800px) {
+    .app {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+    }
+
+    .nav-button {
+        min-width: 125px;
+        margin: 0 4px 0 0;
+        text-align: center;
+    }
+
+    .main {
+        padding: 15px;
+    }
+
+    .taxonomy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .result-header {
+        display: block;
+    }
+
+    .confidence {
+        display: block;
+        margin-top: 4px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Photo & Slide Classifier</h1>
+    <div class="subtitle">
+        Offline taxonomy assistant for archival photograph and slide classification
+    </div>
+</header>
+
+<div class="app">
+
+<nav class="sidebar">
+    <button class="nav-button active" onclick="showScreen('classify', this)">
+        Classify
+    </button>
+
+    <button class="nav-button" onclick="showScreen('taxonomy', this)">
+        Taxonomy
+    </button>
+
+    <button class="nav-button" onclick="showScreen('history', this)">
+        History
+    </button>
+
+    <button class="nav-button" onclick="showScreen('about', this)">
+        About
+    </button>
+</nav>
+
+<main class="main">
+
+<!-- ========================================================= -->
+<!-- CLASSIFY -->
+<!-- ========================================================= -->
+
+<section id="screen-classify" class="screen active">
+
+<div class="card">
+
+    <h2>What are these images about?</h2>
+
+    <p>
+        Describe the collection in ordinary language. Include people,
+        activities, aircraft, locations, objects, events, or anything else
+        that seems relevant.
+    </p>
+
+    <textarea id="description"
+        placeholder="Example: Old photographs of mechanics working on an airplane engine inside a hangar."></textarea>
+
+    <br><br>
+
+    <button class="primary" onclick="classify()">
+        Find Categories
+    </button>
+
+</div>
+
+<div id="resultsArea"></div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- TAXONOMY -->
+<!-- ========================================================= -->
+
+<section id="screen-taxonomy" class="screen">
+
+<div class="card">
+
+    <h2>Taxonomy</h2>
+
+    <div id="taxonomyStatus"></div>
+
+    <p>
+        The classifier uses three external text files:
+    </p>
+
+    <div class="taxonomy-grid">
+
+        <div class="taxonomy-card">
+            <strong>Subjects</strong>
+            <div id="subjectCount" class="stat">Not loaded</div>
+        </div>
+
+        <div class="taxonomy-card">
+            <strong>Keywords</strong>
+            <div id="keywordCount" class="stat">Not loaded</div>
+        </div>
+
+        <div class="taxonomy-card">
+            <strong>Aircraft</strong>
+            <div id="aircraftCount" class="stat">Not loaded</div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <h3>Load / Update Taxonomy</h3>
+
+    <p class="small">
+        Choose the three TXT files. The application parses them locally.
+        No data is uploaded anywhere.
+    </p>
+
+    <div class="file-row">
+        <strong>Subjects</strong>
+        <input type="file" id="subjectsFile" accept=".txt,text/plain">
+    </div>
+
+    <div class="file-row">
+        <strong>Keywords</strong>
+        <input type="file" id="keywordsFile" accept=".txt,text/plain">
+    </div>
+
+    <div class="file-row">
+        <strong>Aircraft</strong>
+        <input type="file" id="aircraftFile" accept=".txt,text/plain">
+    </div>
+
+    <br>
+
+    <button class="primary" onclick="loadSelectedFiles()">
+        Load Taxonomy
+    </button>
+
+    <button class="secondary" onclick="clearTaxonomy()">
+        Clear Stored Taxonomy
+    </button>
+
+</div>
+
+<div class="card">
+
+    <h3>Expected File Format</h3>
+
+    <p>
+        Subjects and Aircraft use tab-separated L1/L2 columns.
+        Synonyms are separated by semicolons.
+    </p>
+
+<pre>Subject (L1)    Subject (L2)    Synonyms
+Aircraft Action
+        Air-to-Air
+        Aircraft Maintenance
+        Deicing         anti ice; ice prevention</pre>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- HISTORY -->
+<!-- ========================================================= -->
+
+<section id="screen-history" class="screen">
+
+<div class="card">
+
+    <h2>Classification History</h2>
+
+    <button class="danger" onclick="clearHistory()">
+        Clear History
+    </button>
+
+    <div id="historyArea"></div>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- ABOUT -->
+<!-- ========================================================= -->
+
+<section id="screen-about" class="screen">
+
+<div class="card">
+
+    <h2>About</h2>
+
+    <p>
+        Photo & Slide Classifier is an offline assistant for assigning
+        official taxonomy categories to groups of archival images.
+    </p>
+
+    <h3>How it works</h3>
+
+    <ol>
+        <li>Load the official taxonomy text files.</li>
+        <li>Describe a group of images.</li>
+        <li>The application searches Subjects, Keywords, and Aircraft.</li>
+        <li>Review the suggested categories.</li>
+        <li>Select the categories that actually apply.</li>
+        <li>Generate a folder label.</li>
+    </ol>
+
+    <h3>Privacy</h3>
+
+    <p>
+        Classification is performed locally in the browser.
+        The application does not require an internet connection.
+    </p>
+
+    <h3>Current Taxonomy</h3>
+
+    <div id="aboutTaxonomy"></div>
+
+</div>
+
+</section>
+
+<footer>
+    Offline application — taxonomy remains under organizational control.
+</footer>
+
+</main>
+</div>
+
+
+<script>
+
+/* ============================================================
+   DATA
+   ============================================================ */
+
+let taxonomy = {
+    subjects: [],
+    keywords: [],
+    aircraft: []
+};
+
+let lastResults = [];
+let selectedResults = [];
+
+
+/* ============================================================
+   SCREEN NAVIGATION
+   ============================================================ */
+
+function showScreen(name, button) {
+
+    document.querySelectorAll(".screen").forEach(s => {
+        s.classList.remove("active");
+    });
+
+    document.getElementById("screen-" + name).classList.add("active");
+
+    document.querySelectorAll(".nav-button").forEach(b => {
+        b.classList.remove("active");
+    });
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+    if (name === "history") {
+        renderHistory();
+    }
+
+    if (name === "taxonomy") {
+        renderTaxonomyStatus();
+    }
+
+    if (name === "about") {
+        renderAbout();
+    }
+}
+
+
+/* ============================================================
+   NORMALIZATION
+   ============================================================ */
+
+function normalize(text) {
+
+    return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[“”"']/g, "")
+        .replace(/[(){}\[\],.!?:;/\\]/g, " ")
+        .replace(/[-–—]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+function tokenize(text) {
+    return normalize(text)
+        .split(" ")
+        .filter(x => x.length > 1);
+}
+
+
+/* ============================================================
+   PARSING
+   ============================================================ */
+
+function parseTaxonomy(text, type) {
+
+    const lines = text.replace(/\r/g, "").split("\n");
+
+    const items = [];
+
+    let currentL1 = "";
+
+    for (let rawLine of lines) {
+
+        if (!rawLine.trim()) continue;
+
+        let cols = rawLine.split("\t");
+
+        /*
+         * Some spreadsheet exports may have spaces rather than tabs.
+         * We preserve the tab structure whenever available.
+         */
+
+        if (cols.length === 1) {
+
+            const cleaned = cols[0].trim();
+
+            if (!cleaned) continue;
+
+            if (
+                cleaned.toLowerCase().includes("subject (l1)") ||
+                cleaned.toLowerCase().includes("keywords") ||
+                cleaned.toLowerCase().includes("aircraft (l1)")
+            ) {
+                continue;
+            }
+
+            /*
+             * If no tabs are present, treat the line as an L1/L2
+             * item according to the taxonomy's indentation.
+             */
+
+            if (/^\s+/.test(rawLine)) {
+
+                items.push({
+                    l1: currentL1,
+                    l2: cleaned,
+                    synonyms: [],
+                    type
+                });
+
+            } else {
+
+                currentL1 = cleaned;
+
+                items.push({
+                    l1: currentL1,
+                    l2: "",
+                    synonyms: [],
+                    type
+                });
+            }
+
+            continue;
+        }
+
+        let l1 = (cols[0] || "").trim();
+        let l2 = (cols[1] || "").trim();
+        let synonymsRaw = (cols[2] || "").trim();
+
+        if (
+            l1.toLowerCase().includes("subject (l1)") ||
+            l1.toLowerCase().includes("aircraft (l1)") ||
+            l1.toLowerCase() === "keywords"
+        ) {
+            continue;
+        }
+
+        if (l1) {
+            currentL1 = l1;
+        }
+
+        if (!l1 && !l2) continue;
+
+        const synonyms = synonymsRaw
+            ? synonymsRaw
+                .split(";")
+                .map(x => x.trim())
+                .filter(Boolean)
+            : [];
+
+        items.push({
+            l1: l1 || currentL1,
+            l2,
+            synonyms,
+            type
+        });
+    }
+
+    /*
+     * Remove exact duplicate entries.
+     */
+
+    const seen = new Set();
+
+    return items.filter(item => {
+
+        const key =
+            type + "|" +
+            normalize(item.l1) + "|" +
+            normalize(item.l2);
+
+        if (seen.has(key)) return false;
+
+        seen.add(key);
+
+        return true;
+    });
+}
+
+
+/* ============================================================
+   FILE LOADING
+   ============================================================ */
+
+async function readFileInput(id) {
+
+    const input = document.getElementById(id);
+
+    if (!input.files || !input.files[0]) {
+        throw new Error("Please select " + id + ".");
+    }
+
+    return await input.files[0].text();
+}
+
+
+async function loadSelectedFiles() {
+
+    try {
+
+        const subjectsText = await readFileInput("subjectsFile");
+        const keywordsText = await readFileInput("keywordsFile");
+        const aircraftText = await readFileInput("aircraftFile");
+
+        const newTaxonomy = {
+
+            subjects: parseTaxonomy(
+                subjectsText,
+                "Subjects"
+            ),
+
+            keywords: parseTaxonomy(
+                keywordsText,
+                "Keywords"
+            ),
+
+            aircraft: parseTaxonomy(
+                aircraftText,
+                "Aircraft"
+            )
+        };
+
+        taxonomy = newTaxonomy;
+
+        saveTaxonomy();
+
+        renderTaxonomyStatus();
+
+        alert(
+            "Taxonomy loaded successfully.\n\n" +
+            "Subjects: " + taxonomy.subjects.length + "\n" +
+            "Keywords: " + taxonomy.keywords.length + "\n" +
+            "Aircraft: " + taxonomy.aircraft.length
+        );
+
+    } catch (error) {
+
+        alert("Could not load taxonomy:\n\n" + error.message);
+    }
+}
+
+
+/* ============================================================
+   LOCAL STORAGE
+   ============================================================ */
+
+function saveTaxonomy() {
+
+    localStorage.setItem(
+        "photoClassifierTaxonomy",
+        JSON.stringify(taxonomy)
+    );
+
+    localStorage.setItem(
+        "photoClassifierTaxonomyDate",
+        new Date().toISOString()
+    );
+}
+
+
+function loadTaxonomy() {
+
+    const raw = localStorage.getItem(
+        "photoClassifierTaxonomy"
+    );
+
+    if (!raw) return;
+
+    try {
+
+        const parsed = JSON.parse(raw);
+
+        if (
+            parsed.subjects &&
+            parsed.keywords &&
+            parsed.aircraft
+        ) {
+            taxonomy = parsed;
+        }
+
+    } catch (e) {
+
+        console.error(e);
+    }
+}
+
+
+function clearTaxonomy() {
+
+    if (!confirm(
+        "Clear the locally stored taxonomy?"
+    )) return;
+
+    localStorage.removeItem(
+        "photoClassifierTaxonomy"
+    );
+
+    localStorage.removeItem(
+        "photoClassifierTaxonomyDate"
+    );
+
+    taxonomy = {
+        subjects: [],
+        keywords: [],
+        aircraft: []
+    };
+
+    renderTaxonomyStatus();
+}
+
+
+/* ============================================================
+   MATCHING
+   ============================================================ */
+
+function getDisplayName(item) {
+
+    if (item.l2) return item.l2;
+
+    return item.l1;
+}
+
+
+function getPath(item) {
+
+    if (item.l2 && item.l1) {
+
+        return item.type +
+            " → " +
+            item.l1 +
+            " → " +
+            item.l2;
+    }
+
+    return item.type +
+        " → " +
+        (item.l1 || item.l2);
+}
+
+
+function getSearchTerms(item) {
+
+    const terms = [];
+
+    if (item.l1) terms.push(item.l1);
+    if (item.l2) terms.push(item.l2);
+
+    for (const synonym of item.synonyms) {
+        terms.push(synonym);
+    }
+
+    return terms.filter(Boolean);
+}
+
+
+function scoreItem(description, item) {
+
+    const normalizedDescription = normalize(description);
+    const descriptionTokens = new Set(
+        tokenize(description)
+    );
+
+    const terms = getSearchTerms(item);
+
+    let score = 0;
+    let matches = [];
+
+    for (const term of terms) {
+
+        const normalizedTerm = normalize(term);
+
+        if (!normalizedTerm) continue;
+
+        /*
+         * Exact phrase.
+         */
+
+        if (
+            normalizedDescription.includes(
+                normalizedTerm
+            )
+        ) {
+
+            if (
+                term === item.l2 ||
+                term === item.l1
+            ) {
+                score += 50;
+                matches.push(
+                    "direct term: " + term
+                );
+            } else {
+                score += 38;
+                matches.push(
+                    "synonym: " + term
+                );
+            }
+        }
+
+        /*
+         * Token matches.
+         */
+
+        const termTokens = tokenize(term);
+
+        let tokenHits = 0;
+
+        for (const token of termTokens) {
+
+            if (descriptionTokens.has(token)) {
+                tokenHits++;
+            }
+        }
+
+        if (termTokens.length > 0) {
+
+            const ratio =
+                tokenHits / termTokens.length;
+
+            if (ratio >= 1) {
+
+                score += 25;
+                matches.push(
+                    "word match: " + term
+                );
+
+            } else if (
+                ratio >= .5 &&
+                tokenHits > 0
+            ) {
+
+                score += 10;
+                matches.push(
+                    "partial match: " + term
+                );
+            }
+        }
+    }
+
+    /*
+     * Parent category gets a small boost when a child matches.
+     */
+
+    if (
+        item.l1 &&
+        item.l2 &&
+        normalize(description).includes(
+            normalize(item.l1)
+        )
+    ) {
+        score += 8;
+    }
+
+    /*
+     * Prevent repeated identical explanations.
+     */
+
+    matches = [...new Set(matches)];
+
+    return {
+        score,
+        matches
+    };
+}
+
+
+function confidence(score) {
+
+    if (score >= 70) {
+        return {
+            label: "VERY STRONG",
+            className: "strong"
+        };
+    }
+
+    if (score >= 45) {
+        return {
+            label: "STRONG",
+            className: "strong"
+        };
+    }
+
+    if (score >= 25) {
+        return {
+            label: "POSSIBLE",
+            className: "possible"
+        };
+    }
+
+    return {
+        label: "LOW CONFIDENCE",
+        className: "low"
+    };
+}
+
+
+function classify() {
+
+    const description =
+        document.getElementById("description").value.trim();
+
+    if (!description) {
+
+        alert(
+            "Please describe the group of images first."
+        );
+
+        return;
+    }
+
+    const totalItems = [
+        ...taxonomy.subjects,
+        ...taxonomy.keywords,
+        ...taxonomy.aircraft
+    ];
+
+    if (totalItems.length === 0) {
+
+        alert(
+            "No taxonomy has been loaded yet.\n\n" +
+            "Open Taxonomy and load subjects.txt, " +
+            "keywords.txt, and aircraft.txt."
+        );
+
+        return;
+    }
+
+    const results = [];
+
+    for (const item of totalItems) {
+
+        const result = scoreItem(
+            description,
+            item
+        );
+
+        if (result.score >= 18) {
+
+            results.push({
+                item,
+                score: result.score,
+                matches: result.matches,
+                confidence: confidence(result.score)
+            });
+        }
+    }
+
+    results.sort((a, b) => b.score - a.score);
+
+    /*
+     * Remove near-duplicate results where the same display name
+     * appears repeatedly.
+     */
+
+    const seenNames = new Set();
+
+    const filtered = results.filter(r => {
+
+        const key =
+            r.item.type +
+            "|" +
+            normalize(getDisplayName(r.item));
+
+        if (seenNames.has(key)) {
+            return false;
+        }
+
+        seenNames.add(key);
+
+        return true;
+    });
+
+    lastResults = filtered.slice(0, 40);
+
+    selectedResults = [];
+
+    renderResults(description);
+}
+
+
+/* ============================================================
+   RESULTS UI
+   ============================================================ */
+
+function renderResults(description) {
+
+    const area =
+        document.getElementById("resultsArea");
+
+    let html = "";
+
+    html += '<div class="card">';
+
+    html += "<h2>Classification Results</h2>";
+
+    html +=
+        '<p><strong>Description:</strong><br>' +
+        escapeHTML(description) +
+        "</p>";
+
+    if (lastResults.length === 0) {
+
+        html +=
+            '<div class="status warning">' +
+            "No strong taxonomy matches were found. " +
+            "Try adding an aircraft type, activity, " +
+            "location, object, or workgroup." +
+            "</div>";
+
+        html += "</div>";
+
+        area.innerHTML = html;
+
+        return;
+    }
+
+    const strong =
+        lastResults.filter(
+            x => x.confidence.className === "strong"
+        );
+
+    const possible =
+        lastResults.filter(
+            x => x.confidence.className === "possible"
+        );
+
+    const low =
+        lastResults.filter(
+            x => x.confidence.className === "low"
+        );
+
+    if (strong.length) {
+
+        html += '<div class="result-section">';
+        html += "<h3>Strong Matches</h3>";
+
+        strong.forEach((r, i) => {
+            html += renderResult(r, i);
+        });
+
+        html += "</div>";
+    }
+
+    if (possible.length) {
+
+        html += '<div class="result-section">';
+        html += "<h3>Other Possible Matches</h3>";
+
+        possible.forEach((r, i) => {
+            html += renderResult(
+                r,
+                i + strong.length
+            );
+        });
+
+        html += "</div>";
+    }
+
+    if (low.length) {
+
+        html += '<div class="result-section">';
+        html += "<details>";
+        html += "<summary>Low-confidence possibilities</summary>";
+
+        low.forEach((r, i) => {
+            html += renderResult(
+                r,
+                i + strong.length + possible.length
+            );
+        });
+
+        html += "</details>";
+        html += "</div>";
+    }
+
+    html += "</div>";
+
+    html += '<div class="card">';
+
+    html += "<h2>Selected Categories</h2>";
+
+    html +=
+        '<p class="small">' +
+        "Select the categories that actually apply to the " +
+        "collection. The application only makes suggestions; " +
+        "the archivist makes the final decision." +
+        "</p>";
+
+    html +=
+        '<div id="selectedList" class="selected-list">' +
+        '<em>No categories selected.</em>' +
+        "</div>";
+
+    html += "<br>";
+
+    html +=
+        '<button class="primary" onclick="generateLabel()">' +
+        "Generate Folder Label" +
+        "</button>";
+
+    html += "</div>";
+
+    area.innerHTML = html;
+}
+
+
+function renderResult(result, index) {
+
+    const item = result.item;
+
+    const name = getDisplayName(item);
+
+    const confidence = result.confidence;
+
+    const reason =
+        result.matches.length
+            ? result.matches.slice(0, 3).join("; ")
+            : "Related taxonomy match.";
+
+    return `
+        <div class="result ${confidence.className}">
+
+            <div class="result-header">
+
+                <div>
+                    <div class="result-title">
+                        ${escapeHTML(name)}
+                    </div>
+
+                    <div class="path">
+                        ${escapeHTML(getPath(item))}
+                    </div>
+                </div>
+
+                <div class="confidence ${confidence.className}">
+                    ${confidence.label}
+                </div>
+
+            </div>
+
+            <div class="reason">
+                ${escapeHTML(reason)}
+            </div>
+
+            <div class="result-actions">
+
+                <label>
+                    <input
+                        type="checkbox"
+                        onchange="toggleResult(${index}, this.checked)"
+                    >
+                    Use this category
+                </label>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+function toggleResult(index, checked) {
+
+    const result = lastResults[index];
+
+    if (!result) return;
+
+    const key =
+        result.item.type +
+        "|" +
+        normalize(getDisplayName(result.item));
+
+    if (checked) {
+
+        if (
+            !selectedResults.some(
+                r =>
+                    r.item.type +
+                    "|" +
+                    normalize(getDisplayName(r.item))
+                    === key
+            )
+        ) {
+
+            selectedResults.push(result);
+        }
+
+    } else {
+
+        selectedResults =
+            selectedResults.filter(
+                r =>
+                    r.item.type +
+                    "|" +
+                    normalize(getDisplayName(r.item))
+                    !== key
+            );
+    }
+
+    renderSelectedList();
+}
+
+
+function renderSelectedList() {
+
+    const el =
+        document.getElementById("selectedList");
+
+    if (!el) return;
+
+    if (!selectedResults.length) {
+
+        el.innerHTML =
+            "<em>No categories selected.</em>";
+
+        return;
+    }
+
+    el.innerHTML =
+        selectedResults.map(
+            r =>
+                `<span class="selected-item">
+                    ${escapeHTML(getDisplayName(r.item))}
+                 </span>`
+        ).join("");
+}
+
+
+/* ============================================================
+   FOLDER LABEL
+   ============================================================ */
+
+function generateLabel() {
+
+    if (!selectedResults.length) {
+
+        alert(
+            "Select at least one category first."
+        );
+
+        return;
+    }
+
+    const labelItems =
+        selectedResults.map(
+            r => getDisplayName(r.item)
+        );
+
+    /*
+     * Remove duplicates.
+     */
+
+    const unique =
+        [...new Set(labelItems)];
+
+    /*
+     * Keep the label reasonably short.
+     */
+
+    const label =
+        unique.slice(0, 6).join(" — ");
+
+    const area =
+        document.getElementById("resultsArea");
+
+    const card =
+        document.createElement("div");
+
+    card.className = "card";
+
+    card.innerHTML = `
+
+        <h2>Suggested Folder Label</h2>
+
+        <div class="folder-label" id="folderLabel">
+            ${escapeHTML(label)}
+        </div>
+
+        <br>
+
+        <button class="primary" onclick="copyLabel()">
+            Copy Label
+        </button>
+
+        <button class="secondary" onclick="editLabel()">
+            Edit Label
+        </button>
+
+        <button class="secondary" onclick="saveClassification()">
+            Save Classification
+        </button>
+    `;
+
+    area.appendChild(card);
+
+    card.scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+
+function editLabel() {
+
+    const el =
+        document.getElementById("folderLabel");
+
+    if (!el) return;
+
+    const current = el.innerText;
+
+    const updated =
+        prompt(
+            "Edit the folder label:",
+            current
+        );
+
+    if (updated !== null) {
+        el.innerText = updated.trim();
+    }
+}
+
+
+async function copyLabel() {
+
+    const el =
+        document.getElementById("folderLabel");
+
+    if (!el) return;
+
+    const text = el.innerText.trim();
+
+    try {
+
+        await navigator.clipboard.writeText(text);
+
+        alert("Folder label copied to clipboard.");
+
+    } catch (e) {
+
+        /*
+         * Clipboard API may be unavailable when the HTML is
+         * opened directly from a local file.
+         */
+
+        const temp =
+            document.createElement("textarea");
+
+        temp.value = text;
+
+        document.body.appendChild(temp);
+
+        temp.select();
+
+        document.execCommand("copy");
+
+        temp.remove();
+
+        alert("Folder label copied.");
+    }
+}
+
+
+/* ============================================================
+   HISTORY
+   ============================================================ */
+
+function saveClassification() {
+
+    const labelElement =
+        document.getElementById("folderLabel");
+
+    if (!labelElement) return;
+
+    const record = {
+
+        date: new Date().toISOString(),
+
+        description:
+            document.getElementById(
+                "description"
+            ).value.trim(),
+
+        label:
+            labelElement.innerText.trim(),
+
+        categories:
+            selectedResults.map(r => ({
+
+                name:
+                    getDisplayName(r.item),
+
+                type:
+                    r.item.type,
+
+                path:
+                    getPath(r.item)
+
+            }))
+    };
+
+    let history = getHistory();
+
+    history.unshift(record);
+
+    /*
+     * Keep last 500 classifications.
+     */
+
+    history = history.slice(0, 500);
+
+    localStorage.setItem(
+        "photoClassifierHistory",
+        JSON.stringify(history)
+    );
+
+    alert(
+        "Classification saved locally."
+    );
+}
+
+
+function getHistory() {
+
+    const raw =
+        localStorage.getItem(
+            "photoClassifierHistory"
+        );
+
+    if (!raw) return [];
+
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return [];
+    }
+}
+
+
+function renderHistory() {
+
+    const area =
+        document.getElementById("historyArea");
+
+    const history = getHistory();
+
+    if (!history.length) {
+
+        area.innerHTML =
+            "<p>No saved classifications.</p>";
+
+        return;
+    }
+
+    area.innerHTML =
+        history.map(record => {
+
+            const date =
+                new Date(record.date)
+                    .toLocaleString();
+
+            return `
+                <div class="history-item">
+
+                    <strong>
+                        ${escapeHTML(record.label)}
+                    </strong>
+
+                    <div class="small">
+                        ${escapeHTML(date)}
+                    </div>
+
+                    <p>
+                        ${escapeHTML(record.description)}
+                    </p>
+
+                    <div class="small">
+                        ${record.categories
+                            .map(c =>
+                                escapeHTML(
+                                    c.path
+                                )
+                            )
+                            .join("<br>")}
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+function clearHistory() {
+
+    if (!confirm(
+        "Delete all saved classification history?"
+    )) return;
+
+    localStorage.removeItem(
+        "photoClassifierHistory"
+    );
+
+    renderHistory();
+}
+
+
+/* ============================================================
+   TAXONOMY DISPLAY
+   ============================================================ */
+
+function renderTaxonomyStatus() {
+
+    document.getElementById("subjectCount")
+        .innerText =
+        taxonomy.subjects.length
+        + " parsed entries";
+
+    document.getElementById("keywordCount")
+        .innerText =
+        taxonomy.keywords.length
+        + " parsed entries";
+
+    document.getElementById("aircraftCount")
+        .innerText =
+        taxonomy.aircraft.length
+        + " parsed entries";
+
+    const hasTaxonomy =
+        taxonomy.subjects.length ||
+        taxonomy.keywords.length ||
+        taxonomy.aircraft.length;
+
+    const status =
+        document.getElementById(
+            "taxonomyStatus"
+        );
+
+    if (hasTaxonomy) {
+
+        const date =
+            localStorage.getItem(
+                "photoClassifierTaxonomyDate"
+            );
+
+        status.innerHTML =
+            `<div class="status ok">
+                ✓ Taxonomy loaded and available offline.
+                ${date
+                    ? "<br>Loaded: " +
+                      new Date(date).toLocaleString()
+                    : ""}
+             </div>`;
+
+    } else {
+
+        status.innerHTML =
+            `<div class="status warning">
+                Taxonomy has not been loaded.
+             </div>`;
+    }
+}
+
+
+function renderAbout() {
+
+    const total =
+        taxonomy.subjects.length +
+        taxonomy.keywords.length +
+        taxonomy.aircraft.length;
+
+    document.getElementById(
+        "aboutTaxonomy"
+    ).innerHTML = `
+
+        <div class="status ${
+            total
+                ? "ok"
+                : "warning"
+        }">
+
+            ${
+                total
+                ? "✓ Offline taxonomy loaded."
+                : "No taxonomy loaded."
+            }
+
+            <br>
+
+            Subjects:
+            ${taxonomy.subjects.length}
+
+            <br>
+
+            Keywords:
+            ${taxonomy.keywords.length}
+
+            <br>
+
+            Aircraft:
+            ${taxonomy.aircraft.length}
+
+        </div>
+    `;
+}
+
+
+/* ============================================================
+   ESCAPE HTML
+   ============================================================ */
+
+function escapeHTML(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* ============================================================
+   STARTUP
+   ============================================================ */
+
+loadTaxonomy();
+
+renderTaxonomyStatus();
+
+renderAbout();
+
+</script>
+
+</body>
+</html>

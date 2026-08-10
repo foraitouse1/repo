@@ -1,0 +1,54 @@
+Keywords	Synonyms
+Airstair	
+Amenity Kit	
+Barf Bag	
+Belly Bin	
+Boarding Pass	
+Cargo	cargo container;consignment;delivery;freight
+Catering	
+Coach Class	
+Commissary 	
+Company Magazine	house organ; in-house publication
+Delta Difference	
+Demo Kit	
+Employee Magazine	
+Employee Newsletter	
+Employee Resource Group	
+Entree	
+Flight Bag	
+Flight Kitchen	
+Flying	
+Ice Prevention	anti ice
+ID Badge	
+Image	
+Industry First	
+Innovation	
+Invention	
+IROP	
+Jetway	boarding bridge
+Kiddie Wings	
+Kids	
+Life Vest	
+Mascot	
+Mockup	mock-up
+Name Badge	
+Non-Rev	non-revving
+Orchids	
+Picture	image;photo
+Radome	
+Seat Cover	
+Security Screening	
+Snack	
+Speedpak	
+Stewardess	
+Stirrer	
+Stories	
+Tarmac	
+Thermos	
+Ticket Jacket	
+Tow Tractor	ramp tug
+Train Case	
+Validator	
+Wings	
+Wings (Insignia)	
+X-ray	

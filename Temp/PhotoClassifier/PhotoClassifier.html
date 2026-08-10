@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo & Slide Classifier</title>
+
+<style>
+:root {
+    --blue: #17365d;
+    --blue2: #285b91;
+    --light-blue: #eaf2f8;
+    --border: #c9d2dc;
+    --text: #20252b;
+    --muted: #66717d;
+    --green: #287a45;
+    --green-bg: #edf7f0;
+    --yellow: #9a7200;
+    --yellow-bg: #fff8df;
+    --red: #a33b32;
+    --red-bg: #fff0ee;
+    --white: #ffffff;
+    --background: #f3f5f7;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+header {
+    background: var(--blue);
+    color: white;
+    padding: 18px 22px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+header p {
+    margin: 5px 0 0;
+    color: #dce8f4;
+    font-size: 14px;
+}
+
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 22px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue);
+    margin: 0 0 12px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    border: 1px solid #aeb8c3;
+    border-radius: 6px;
+    padding: 13px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    line-height: 1.45;
+}
+
+textarea:focus {
+    outline: 3px solid rgba(40,91,145,.15);
+    border-color: var(--blue2);
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 6px;
+    padding: 11px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#classifyButton {
+    background: var(--blue2);
+    color: white;
+}
+
+#classifyButton:hover {
+    background: var(--blue);
+}
+
+#clearButton {
+    background: #e7eaed;
+    color: #30363c;
+}
+
+.status {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.results {
+    display: none;
+}
+
+.category {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+
+.category-header {
+    background: var(--light-blue);
+    padding: 10px 13px;
+    font-weight: 700;
+    color: var(--blue);
+    border-bottom: 1px solid var(--border);
+}
+
+.category-body {
+    padding: 8px 13px;
+}
+
+.match {
+    padding: 10px 4px;
+    border-bottom: 1px solid #edf0f2;
+}
+
+.match:last-child {
+    border-bottom: none;
+}
+
+.match-name {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.match-path {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.match-description {
+    color: #4f5b66;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.score {
+    display: inline-block;
+    margin-top: 7px;
+    font-size: 11px;
+    padding: 3px 7px;
+    border-radius: 12px;
+    background: var(--green-bg);
+    color: var(--green);
+    font-weight: 700;
+}
+
+.no-results {
+    background: var(--yellow-bg);
+    color: #6e5700;
+    border: 1px solid #e4cf79;
+    padding: 14px;
+    border-radius: 6px;
+}
+
+.data-status {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.data-file {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    background: #fafbfc;
+}
+
+.data-file strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.loaded {
+    color: var(--green);
+    font-weight: 700;
+}
+
+.not-loaded {
+    color: var(--red);
+    font-weight: 700;
+}
+
+.instructions {
+    color: var(--muted);
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.loading {
+    color: var(--yellow);
+    font-weight: 700;
+}
+
+footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 22px 30px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+@media (max-width: 700px) {
+
+    header h1 {
+        font-size: 20px;
+    }
+
+    main {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .data-status {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Photo &amp; Slide Classifier</h1>
+    <p>Offline taxonomy assistant for organizing photographs and slides</p>
+</header>
+
+<main>
+
+    <!-- =====================================================
+         IMAGE DESCRIPTION
+         ===================================================== -->
+
+    <section class="card">
+
+        <div class="section-title">
+            Describe the Group of Images
+        </div>
+
+        <textarea
+            id="description"
+            placeholder="Describe what is shown in this group of photographs or slides. For example: Employees loading baggage carts beside aircraft on the ramp..."
+        ></textarea>
+
+        <div class="button-row">
+
+            <button
+                id="classifyButton"
+                onclick="classifyImages()">
+                CLASSIFY
+            </button>
+
+            <button
+                id="clearButton"
+                onclick="clearForm()">
+                CLEAR
+            </button>
+
+        </div>
+
+        <div id="status" class="status">
+            Enter a description and select CLASSIFY.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESULTS
+         ===================================================== -->
+
+    <section
+        id="resultsCard"
+        class="card results">
+
+        <div class="section-title">
+            Recommended Categories
+        </div>
+
+        <div id="results"></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TAXONOMY STATUS
+         ===================================================== -->
+
+    <section class="card">
+
+        <div class="section-title">
+            Taxonomy Data
+        </div>
+
+        <div class="instructions">
+
+            The classifier reads the three taxonomy text files
+            stored alongside this HTML file:
+
+            <strong>Subjects.txt</strong>,
+            <strong>Keywords.txt</strong>, and
+            <strong>Aircraft.txt</strong>.
+
+            When the spreadsheet taxonomy changes, replace the
+            appropriate text file(s) with the updated version.
+
+        </div>
+
+        <br>
+
+        <div class="data-status">
+
+            <div class="data-file">
+
+                <strong>Subjects.txt</strong>
+
+                <span
+                    id="subjectsStatus"
+                    class="loading">
+                    Loading...
+                </span>
+
+            </div>
+
+            <div class="data-file">
+
+                <strong>Keywords.txt</strong>
+
+                <span
+                    id="keywordsStatus"
+                    class="loading">
+                    Loading...
+                </span>
+
+            </div>
+
+            <div class="data-file">
+
+                <strong>Aircraft.txt</strong>
+
+                <span
+                    id="aircraftStatus"
+                    class="loading">
+                    Loading...
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    Photo &amp; Slide Classifier — local/offline taxonomy tool
+</footer>
+
+
+<script>
+
+/* ============================================================
+   TAXONOMY DATA
+   ============================================================ */
+
+let taxonomy = {
+    subjects: [],
+    keywords: [],
+    aircraft: []
+};
+
+
+/* ============================================================
+   NORMALIZATION
+   ============================================================ */
+
+function normalize(text) {
+
+    if (!text) {
+        return "";
+    }
+
+    return text
+        .toLowerCase()
+        .replace(/[–—]/g, "-")
+        .replace(/[“”"]/g, "")
+        .replace(/[’']/g, "")
+        .replace(/[()]/g, " ")
+        .replace(/[^a-z0-9\s\-\/]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+function getWords(text) {
+
+    return normalize(text)
+        .split(/[\s\/\-]+/)
+        .filter(word => word.length > 1);
+}
+
+
+/* ============================================================
+   STOP WORDS
+   ============================================================ */
+
+const stopWords = new Set([
+
+    "the",
+    "and",
+    "for",
+    "with",
+    "from",
+    "this",
+    "that",
+    "these",
+    "those",
+    "near",
+    "beside",
+    "around",
+    "into",
+    "onto",
+    "some",
+    "many",
+    "group",
+    "groups",
+    "photo",
+    "photos",
+    "picture",
+    "pictures",
+    "image",
+    "images",
+    "slide",
+    "slides",
+    "showing",
+    "shows",
+    "view"
+
+]);
+
+
+/* ============================================================
+   LOAD EXTERNAL TAXONOMY FILE
+   ============================================================ */
+
+async function loadTaxonomyFile(
+    filename,
+    type,
+    statusId
+) {
+
+    try {
+
+        const response = await fetch(
+            filename,
+            {
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Could not load " + filename
+            );
+        }
+
+        const text = await response.text();
+
+        taxonomy[type] =
+            parseTaxonomy(
+                text,
+                type
+            );
+
+        const status =
+            document.getElementById(statusId);
+
+        status.textContent =
+            "Loaded — " +
+            taxonomy[type].length +
+            " entries";
+
+        status.className = "loaded";
+
+        return true;
+
+    }
+    catch (error) {
+
+        const status =
+            document.getElementById(statusId);
+
+        status.textContent =
+            "Not loaded";
+
+        status.className =
+            "not-loaded";
+
+        console.error(error);
+
+        return false;
+    }
+}
+
+
+/* ============================================================
+   PARSE TAXONOMY FILE
+   ============================================================ */
+
+function parseTaxonomy(
+    text,
+    type
+) {
+
+    const lines =
+        text.split(/\r?\n/);
+
+    const entries = [];
+
+    let currentL1 = "";
+
+
+    for (
+        let rawLine of lines
+    ) {
+
+        let line =
+            rawLine.trim();
+
+
+        if (!line) {
+            continue;
+        }
+
+
+        /*
+         * Ignore code block markers.
+         */
+
+        if (line === "```") {
+            continue;
+        }
+
+
+        /*
+         * Support markdown-style tables
+         * in addition to normal tab-delimited
+         * spreadsheet exports.
+         */
+
+        if (line.startsWith("|")) {
+
+            const cells =
+                line
+                    .split("|")
+                    .map(x => x.trim())
+                    .filter(Boolean);
+
+            if (!cells.length) {
+                continue;
+            }
+
+            line =
+                cells.join("\t");
+        }
+
+
+        /*
+         * Split spreadsheet rows.
+         */
+
+        let cells =
+            line.split(/\t+/);
+
+
+        /*
+         * If tabs were lost during copying,
+         * attempt to recognize multiple spaces.
+         */
+
+        if (cells.length === 1) {
+
+            cells =
+                line.split(/\s{2,}/);
+        }
+
+
+        if (type === "subjects") {
+
+            let l1 =
+                (cells[0] || "").trim();
+
+            let l2 =
+                (cells[1] || "").trim();
+
+            let synonyms =
+                (cells[2] || "").trim();
+
+
+            /*
+             * Skip header.
+             */
+
+            if (
+                normalize(l1) === "subject l1" ||
+                normalize(l1) === "subject"
+            ) {
+                continue;
+            }
+
+
+            /*
+             * A populated first column establishes
+             * the current L1.
+             */
+
+            if (l1) {
+
+                currentL1 =
+                    l1;
+
+                /*
+                 * A row with only an L1 value
+                 * is itself a usable category.
+                 */
+
+                if (!l2) {
+
+                    entries.push({
+
+                        label: l1,
+                        parent: "",
+                        synonyms: synonyms,
+                        type: type
+
+                    });
+
+                    continue;
+                }
+            }
+
+
+            /*
+             * Blank L1 means this is an L2 under
+             * the previous L1.
+             */
+
+            if (!l1 && l2) {
+
+                entries.push({
+
+                    label: l2,
+                    parent: currentL1,
+                    synonyms: synonyms,
+                    type: type
+
+                });
+
+                continue;
+            }
+
+
+            /*
+             * L1 + L2 row.
+             */
+
+            if (l1 && l2) {
+
+                entries.push({
+
+                    label: l2,
+                    parent: l1,
+                    synonyms: synonyms,
+                    type: type
+
+                });
+            }
+
+        }
+
+
+        else if (type === "keywords") {
+
+            let keyword =
+                (cells[0] || "").trim();
+
+            let synonyms =
+                (cells[1] || "").trim();
+
+
+            if (!keyword) {
+                continue;
+            }
+
+
+            if (
+                normalize(keyword) ===
+                "keywords"
+            ) {
+                continue;
+            }
+
+
+            entries.push({
+
+                label: keyword,
+                parent: "",
+                synonyms: synonyms,
+                type: type
+
+            });
+        }
+
+
+        else if (type === "aircraft") {
+
+            let l1 =
+                (cells[0] || "").trim();
+
+            let l2 =
+                (cells[1] || "").trim();
+
+
+            if (!l1) {
+                continue;
+            }
+
+
+            /*
+             * Skip header.
+             */
+
+            if (
+                normalize(l1) ===
+                "aircraft l1"
+            ) {
+                continue;
+            }
+
+
+            /*
+             * Keep the actual aircraft/model
+             * as the searchable label.
+             */
+
+            entries.push({
+
+                label:
+                    l2 || l1,
+
+                parent:
+                    l2 ? l1 : "",
+
+                synonyms:
+                    "",
+
+                type:
+                    type
+
+            });
+        }
+    }
+
+
+    return removeDuplicates(entries);
+}
+
+
+/* ============================================================
+   REMOVE DUPLICATES
+   ============================================================ */
+
+function removeDuplicates(entries) {
+
+    const seen =
+        new Set();
+
+    const result = [];
+
+
+    for (
+        const entry of entries
+    ) {
+
+        const key =
+            entry.type +
+            "|" +
+            normalize(entry.parent) +
+            "|" +
+            normalize(entry.label);
+
+
+        if (seen.has(key)) {
+            continue;
+        }
+
+
+        seen.add(key);
+
+        result.push(entry);
+    }
+
+
+    return result;
+}
+
+
+/* ============================================================
+   SEARCH TEXT
+   ============================================================ */
+
+function entrySearchText(entry) {
+
+    return normalize(
+
+        entry.label +
+        " " +
+        entry.parent +
+        " " +
+        entry.synonyms
+
+    );
+}
+
+
+/* ============================================================
+   SCORE MATCH
+   ============================================================ */
+
+function scoreEntry(
+    entry,
+    description
+) {
+
+    const query =
+        normalize(description);
+
+
+    const queryWords =
+        getWords(query)
+            .filter(
+                word =>
+                    !stopWords.has(word)
+            );
+
+
+    if (!queryWords.length) {
+        return 0;
+    }
+
+
+    const label =
+        normalize(entry.label);
+
+    const parent =
+        normalize(entry.parent);
+
+    const synonyms =
+        normalize(entry.synonyms);
+
+
+    let score = 0;
+
+    let matchedWords = 0;
+
+
+    /*
+     * Exact phrase matches are strong.
+     */
+
+    if (
+        label &&
+        query.includes(label)
+    ) {
+
+        score += 14;
+    }
+
+
+    if (
+        parent &&
+        query.includes(parent)
+    ) {
+
+        score += 5;
+    }
+
+
+    /*
+     * Synonym matches.
+     */
+
+    if (synonyms) {
+
+        const synonymList =
+            synonyms
+                .split(/[;,]/)
+                .map(
+                    x => normalize(x)
+                )
+                .filter(Boolean);
+
+
+        for (
+            const synonym of synonymList
+        ) {
+
+            if (
+                query.includes(synonym)
+            ) {
+
+                score += 10;
+            }
+        }
+    }
+
+
+    /*
+     * Individual word matches.
+     */
+
+    for (
+        const word of queryWords
+    ) {
+
+        if (word.length < 3) {
+            continue;
+        }
+
+
+        if (
+            label.includes(word)
+        ) {
+
+            score += 3;
+
+            matchedWords++;
+
+            continue;
+        }
+
+
+        if (
+            parent.includes(word)
+        ) {
+
+            score += 2;
+
+            matchedWords++;
+
+            continue;
+        }
+
+
+        if (
+            synonyms.includes(word)
+        ) {
+
+            score += 4;
+
+            matchedWords++;
+
+            continue;
+        }
+
+
+        /*
+         * Prefix matching.
+         */
+
+        const labelWords =
+            getWords(label);
+
+
+        if (
+            labelWords.some(
+                x =>
+                    x.startsWith(word) ||
+                    word.startsWith(x)
+            )
+        ) {
+
+            score += 1;
+
+            matchedWords++;
+        }
+    }
+
+
+    /*
+     * Reward multiple matching terms.
+     */
+
+    if (
+        matchedWords >= 2
+    ) {
+
+        score +=
+            matchedWords * 2;
+    }
+
+
+    if (
+        matchedWords === 0 &&
+        score < 5
+    ) {
+
+        return 0;
+    }
+
+
+    return score;
+}
+
+
+/* ============================================================
+   CLASSIFICATION
+   ============================================================ */
+
+function classifyImages() {
+
+    const description =
+        document
+            .getElementById("description")
+            .value
+            .trim();
+
+
+    const resultsCard =
+        document
+            .getElementById("resultsCard");
+
+
+    const results =
+        document
+            .getElementById("results");
+
+
+    const status =
+        document
+            .getElementById("status");
+
+
+    if (!description) {
+
+        status.textContent =
+            "Please describe the group of images first.";
+
+        resultsCard.style.display =
+            "none";
+
+        return;
+    }
+
+
+    const totalEntries =
+        taxonomy.subjects.length +
+        taxonomy.keywords.length +
+        taxonomy.aircraft.length;
+
+
+    if (!totalEntries) {
+
+        status.textContent =
+            "The taxonomy files have not loaded.";
+
+        resultsCard.style.display =
+            "none";
+
+        return;
+    }
+
+
+    status.textContent =
+        "Analyzing the description...";
+
+
+    const categories = [
+
+        {
+            title: "SUBJECTS",
+            entries: taxonomy.subjects
+        },
+
+        {
+            title: "KEYWORDS",
+            entries: taxonomy.keywords
+        },
+
+        {
+            title: "AIRCRAFT",
+            entries: taxonomy.aircraft
+        }
+
+    ];
+
+
+    let html = "";
+
+    let totalMatches = 0;
+
+
+    for (
+        const category of categories
+    ) {
+
+        const scored =
+            category.entries
+
+                .map(
+                    entry => ({
+
+                        entry: entry,
+
+                        score:
+                            scoreEntry(
+                                entry,
+                                description
+                            )
+
+                    })
+                )
+
+                .filter(
+                    x =>
+                        x.score > 0
+                )
+
+                .sort(
+                    (a, b) =>
+                        b.score - a.score
+                );
+
+
+        /*
+         * Show the strongest matches,
+         * but do not overwhelm the user.
+         */
+
+        const top =
+            scored.slice(0, 8);
+
+
+        if (!top.length) {
+            continue;
+        }
+
+
+        totalMatches +=
+            top.length;
+
+
+        html += `
+
+            <div class="category">
+
+                <div class="category-header">
+                    ${escapeHtml(
+                        category.title
+                    )}
+                </div>
+
+                <div class="category-body">
+
+        `;
+
+
+        for (
+            const item of top
+        ) {
+
+            const entry =
+                item.entry;
+
+
+            let path = "";
+
+
+            if (entry.parent) {
+
+                path =
+                    escapeHtml(
+                        entry.parent
+                    );
+            }
+
+
+            html += `
+
+                <div class="match">
+
+                    <div class="match-name">
+                        ${escapeHtml(
+                            entry.label
+                        )}
+                    </div>
+
+                    ${
+                        path
+                        ?
+                        `
+                        <div class="match-path">
+                            ${path}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+                    <div class="score">
+                        ${confidenceLabel(
+                            item.score
+                        )}
+                    </div>
+
+                </div>
+
+            `;
+        }
+
+
+        html += `
+
+                </div>
+
+            </div>
+
+        `;
+    }
+
+
+    if (!totalMatches) {
+
+        html = `
+
+            <div class="no-results">
+
+                No strong taxonomy matches were found.
+
+                Try describing the people, activity,
+                location, aircraft, object, workgroup,
+                or setting visible in the images.
+
+            </div>
+
+        `;
+    }
+
+
+    results.innerHTML =
+        html;
+
+
+    resultsCard.style.display =
+        "block";
+
+
+    status.textContent =
+        totalMatches
+        ?
+        "Classification complete."
+        :
+        "No strong matches found.";
+}
+
+
+/* ============================================================
+   CONFIDENCE
+   ============================================================ */
+
+function confidenceLabel(score) {
+
+    if (score >= 14) {
+        return "STRONG MATCH";
+    }
+
+    if (score >= 8) {
+        return "GOOD MATCH";
+    }
+
+    return "POSSIBLE MATCH";
+}
+
+
+/* ============================================================
+   CLEAR
+   ============================================================ */
+
+function clearForm() {
+
+    document
+        .getElementById("description")
+        .value = "";
+
+
+    document
+        .getElementById("results")
+        .innerHTML = "";
+
+
+    document
+        .getElementById("resultsCard")
+        .style.display = "none";
+
+
+    document
+        .getElementById("status")
+        .textContent =
+            "Enter a description and select CLASSIFY.";
+
+
+    document
+        .getElementById("description")
+        .focus();
+}
+
+
+/* ============================================================
+   ESCAPE HTML
+   ============================================================ */
+
+function escapeHtml(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+
+async function initialize() {
+
+    /*
+     * THIS IS THE V1 FILE-LOADING APPROACH.
+     *
+     * The HTML expects these three files to be
+     * alongside the HTML file:
+     *
+     * Subjects.txt
+     * Keywords.txt
+     * Aircraft.txt
+     */
+
+    await Promise.all([
+
+        loadTaxonomyFile(
+            "Subjects.txt",
+            "subjects",
+            "subjectsStatus"
+        ),
+
+        loadTaxonomyFile(
+            "Keywords.txt",
+            "keywords",
+            "keywordsStatus"
+        ),
+
+        loadTaxonomyFile(
+            "Aircraft.txt",
+            "aircraft",
+            "aircraftStatus"
+        )
+
+    ]);
+
+    console.log(
+        "Taxonomy loaded:",
+        taxonomy
+    );
+}
+
+
+/* ============================================================
+   CTRL+ENTER / CMD+ENTER
+   ============================================================ */
+
+document
+    .getElementById("description")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                (event.ctrlKey ||
+                 event.metaKey) &&
+                event.key === "Enter"
+            ) {
+
+                classifyImages();
+            }
+        }
+    );
+
+
+/* START */
+
+initialize();
+
+</script>
+
+</body>
+</html>
