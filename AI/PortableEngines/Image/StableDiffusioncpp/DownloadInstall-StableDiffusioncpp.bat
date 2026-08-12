@@ -22,7 +22,7 @@ if not defined _LOG_DIR (
     exit /b 1
 )
 
-set "_ENGINE_DIR=%SCRIPT_DIR%engine%_ENGINE_BACKEND%"
+set "_ENGINE_DIR=%SCRIPT_DIR%Engine\%_ENGINE_BACKEND%"
 set "_PS_FILE=%~dp0portable_stablediffusioncpp_install.ps1"
 
 call :WritePowerShell > "%_PS_FILE%"
@@ -55,10 +55,9 @@ del "%_PS_FILE%" >nul 2>&1
 echo =========================================================
 echo        EXPORT ENVIRONMENT VARS FOR DOWNLINE SCRIPTS...
 echo =========================================================
-call IsolateEnv-Project-Add.bat "%~n0%~x0" SET "_LLAMA_BACKEND=vulkan"
-call IsolateEnv-Project-Add.bat "%~n0%~x0" SET "_ENGINE_DIR=%%%%SCRIPT_DIR%%%%engine%%%%_ENGINE_BACKEND%%%%"
-call IsolateEnv-Project-Add.bat "%~n0%~x0" SET "LLAMA_CACHE=%%%%SCRIPT_DIR%%%%Models\llamacache"
-call IsolateEnv-Project-Add.bat "%~n0%~x0" SET "HF_HOME=%%%%SCRIPT_DIR%%%%Models\hfcache"
+call IsolateEnv-Project-Add.bat "%~n0%~x0" SET "_ENGINE_BACKEND=vulkan"
+call IsolateEnv-Project-Add.bat "%~n0%~x0" SET "_ENGINE_DIR=%%%%SCRIPT_DIR%%%%Engine\%%%%_ENGINE_BACKEND%%%%"
+
 
 pause
 endlocal
@@ -95,12 +94,19 @@ echo if (-not $Release.assets) {
 echo     throw "No release assets found"
 echo }
 echo.
-echo $Asset = $Release.assets ^| Where-Object {
-echo     $_.name -match $Backend -and
-echo     $_.name -match "win" -and
-echo     $_.name -match "x64" -and
-echo     $_.name -match ".zip$"
-echo } ^| Select-Object -First 1
+echo $Asset = $null
+echo.
+echo foreach ($ReleaseAsset in $Release.assets) {
+echo     if (
+echo         $ReleaseAsset.name -match $Backend -and
+echo         $ReleaseAsset.name -match "win" -and
+echo         $ReleaseAsset.name -match "x64" -and
+echo         $ReleaseAsset.name -match "\.zip$"
+echo     ) {
+echo         $Asset = $ReleaseAsset
+echo         break
+echo     }
+echo }
 echo.
 echo if (-not $Asset) {
 echo     throw "No matching upstream stable-diffusion.cpp build found for backend: $Backend"
@@ -193,4 +199,4 @@ echo Write-Warning "The executable was found successfully, but this check does n
 echo Write-Warning "If stable-diffusion.cpp fails to start later, a missing DLL or other runtime dependency may be the cause."
 echo Write-Host
 echo.
-echo exit /b 0
+echo exit 0

@@ -9,13 +9,13 @@ setlocal EnableExtensions DisableDelayedExpansion
 
 echo ====================================================
 echo       INSTALLING PORTABLE MSVC RUNTIME 
-echo        INSIDE ESTABLISHED _LLAMA_DIR
+echo        INSIDE ESTABLISHED _ENGINE_DIR
 echo ====================================================
 
 call "%~dp0IsolateEnv-Initialize.bat"
 
-if not defined _LLAMA_DIR (
-echo ERROR: IsolateEnv-Project.bat failed to define _LLAMA_DIR
+if not defined _ENGINE_DIR (
+echo ERROR: IsolateEnv-Project.bat failed to define _ENGINE_DIR
 pause
 exit /b 1
 )
@@ -61,14 +61,11 @@ pause
 endlocal
 exit /b 0
 
-
-
 :WritePowerShell
 
 echo $ErrorActionPreference = "Stop"
 echo.
 
-echo $TargetDir = "%_LLAMA_DIR%"
 echo $DownloadDir = "%_DOWNLOAD_DIR%"
 echo.
 
@@ -142,7 +139,7 @@ echo         Write-Host "Copying $File"
 
 echo         Copy-Item `
 echo             -Path $Source `
-echo             -Destination $TargetDir `
+echo             -Destination %_ENGINE_DIR% `
 echo             -Force
 
 echo     }
@@ -167,7 +164,7 @@ echo foreach ($File in $RuntimeFiles) {
 
 echo.
 
-echo     if (-not (Test-Path (Join-Path $TargetDir $File))) {
+echo     if (-not (Test-Path (Join-Path %_ENGINE_DIR% $File))) {
 
 echo         throw "Missing portable runtime file: $File"
 

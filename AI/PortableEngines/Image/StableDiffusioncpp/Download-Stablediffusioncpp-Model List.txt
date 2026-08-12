@@ -21,8 +21,12 @@
                                   v
                              NEW IMAGE
 
+T2I (Text-to-Image): Generates a completely new image from scratch using only a text description.
 
+I2I (Image-to-Image): Takes an existing image, adds noise to it, and uses a text prompt to reshape the overall composition into a new image. It treats the original image as a loose structural layout.
 
+EDIT (Instruction Editing): Takes an existing image and applies a command or action (e.g., "make it rain", "add sunglasses", or "turn the cat into a dog"). It leaves the rest of the image entirely untouched while precisely altering only the subject of your instruction.
+The Bottom "REF" Layer: Your diagram also shows REF branching down from EDIT. This represents Reference-guided Editing. If you choose the EDIT path, you can optionally provide a second reference image. For example, you can give the AI a photo of yourself (Input Image), an instruction like "Make me wear this jacket" (Text Prompt), and a picture of a jacket from an online store (Reference Image). The EDIT engine will seamlessly graft the reference object onto the original target.
 
 
 

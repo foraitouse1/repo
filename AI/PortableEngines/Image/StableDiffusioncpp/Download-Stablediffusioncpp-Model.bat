@@ -530,29 +530,69 @@ echo     throw "Unable to identify a usable $DiffusionQuant diffusion model in $
 echo }
 echo.
 echo # ------------------------------------------------
-echo # Select the documented FLUX.2 VAE repository.
+echo # Prepare the model folder BEFORE VAE discovery.
+echo #
+echo # This allows an already-downloaded VAE to be used
+echo # without querying the gated Hugging Face repository.
 echo # ------------------------------------------------
 echo.
-echo $VaeCandidate = $UniqueCandidates ^|
-echo     Where-Object {
-echo         $_.Repo -eq "black-forest-labs/FLUX.2-dev"
-echo     } ^|
-echo     Select-Object -First 1
+echo $ModelFolderName = $ModelName
+echo $InvalidChars = [IO.Path]::GetInvalidFileNameChars()
+echo.
+echo foreach ($Char in $InvalidChars) {
+echo     $ModelFolderName = $ModelFolderName.Replace([string]$Char, "_")
+echo }
+echo.
+echo $ModelFolderName = $ModelFolderName.Trim()
+echo.
+echo $ModelFolder = Join-Path $ModelRoot $ModelFolderName
+echo.
+echo New-Item -ItemType Directory -Path $ModelFolder -Force ^| Out-Null
+echo.
+echo # ------------------------------------------------
+echo # Select the documented FLUX.2 VAE repository.
+echo #
+echo # If the VAE already exists locally, use it and
+echo # do NOT query black-forest-labs/FLUX.2-dev.
+echo # ------------------------------------------------
 echo.
 echo $VaeFile = $null
 echo $VaeRepo = ""
 echo.
-echo if ($VaeCandidate) {
-echo     $VaeFiles = Get-HfFiles $VaeCandidate.Repo $VaeCandidate.Path
-echo     $VaeFile = Select-File $VaeFiles "vae" $ModelName ""
+echo $LocalVae = Get-ChildItem -Path $ModelFolder -File -ErrorAction SilentlyContinue ^|
+echo     Where-Object {
+echo         $_.Name -match "(?i)(vae|autoencoder|^ae[\._-]).*\.(safetensors|gguf|ckpt|pth|pt)$"
+echo     } ^|
+echo     Select-Object -First 1
 echo.
-echo     if ($VaeFile) {
-echo         $VaeRepo = $VaeCandidate.Repo
+echo if ($LocalVae) {
+echo     Write-Host
+echo     Write-Host "Already exists: $($LocalVae.FullName)"
+echo     Write-Host "Skipping Hugging Face VAE discovery/download."
+echo.
+echo     $VaeFile = [PSCustomObject]@{
+echo         path = $LocalVae.Name
 echo     }
 echo }
+echo else {
+echo     $VaeCandidate = $UniqueCandidates ^|
+echo         Where-Object {
+echo             $_.Repo -eq "black-forest-labs/FLUX.2-dev"
+echo         } ^|
+echo         Select-Object -First 1
 echo.
-echo if (-not $VaeFile) {
-echo     throw "Unable to identify the required FLUX.2 VAE."
+echo     if ($VaeCandidate) {
+echo         $VaeFiles = Get-HfFiles $VaeCandidate.Repo $VaeCandidate.Path
+echo         $VaeFile = Select-File $VaeFiles "vae" $ModelName ""
+echo.
+echo         if ($VaeFile) {
+echo             $VaeRepo = $VaeCandidate.Repo
+echo         }
+echo     }
+echo.
+echo     if (-not $VaeFile) {
+echo         throw "Unable to identify the required FLUX.2 VAE."
+echo     }
 echo }
 echo.
 echo # ------------------------------------------------
@@ -595,19 +635,6 @@ echo $ClipGFile = $null
 echo $ClipGRepo = ""
 echo $T5File = $null
 echo $T5Repo = ""
-echo.
-echo $ModelFolderName = $ModelName
-echo $InvalidChars = [IO.Path]::GetInvalidFileNameChars()
-echo.
-echo foreach ($Char in $InvalidChars) {
-echo     $ModelFolderName = $ModelFolderName.Replace([string]$Char, "_")
-echo }
-echo.
-echo $ModelFolderName = $ModelFolderName.Trim()
-echo.
-echo $ModelFolder = Join-Path $ModelRoot $ModelFolderName
-echo.
-echo New-Item -ItemType Directory -Path $ModelFolder -Force ^| Out-Null
 echo.
 echo $ModelDirRelative = ".\Models\$ModelFolderName"
 echo $DiffusionRelative = "$ModelDirRelative\$($DiffusionFile.path.Split("/")[-1])"

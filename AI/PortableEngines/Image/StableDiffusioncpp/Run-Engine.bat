@@ -25,7 +25,7 @@ if not defined _MODEL_DIR (
     exit /b 1
 )
 
-set "_PS_FILE=%~dp0portable_run_engine.ps1"
+set "_PS_FILE=%TEMP%\portable_run_engine.ps1"
 
 call :WritePowerShell > "%_PS_FILE%"
 
@@ -34,6 +34,9 @@ if not exist "%_PS_FILE%" (
     pause
     exit /b 1
 )
+
+::Add port for downline apps
+call IsolateEnv-Project-Add.bat "%~n0%~x0" SET "_SD_PORT=7860"
 
 powershell.exe ^
 -NoProfile ^
@@ -197,6 +200,11 @@ echo         $Args += "--t5xxl"
 echo         $Args += $T5
 echo     }
 echo }
+echo.
+echo $Args += "--diffusion-fa"
+echo $Args += "--vae-tiling"
+echo $Args += "--vae-on-cpu"
+echo $Args += "--offload-to-cpu"
 echo.
 echo $Args += "--listen-ip"
 echo $Args += "127.0.0.1"
