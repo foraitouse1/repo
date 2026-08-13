@@ -327,6 +327,7 @@ echo         }
 echo     ) -join "/"
 echo.
 echo     $Url = "$HFBase/$Repo/resolve/main/$Encoded"
+echo     if ($File -match "^https://") { $Url = $File }
 echo.
 echo     Write-Host
 echo     Write-Host "Downloading:"
@@ -552,8 +553,7 @@ echo.
 echo # ------------------------------------------------
 echo # Select the documented FLUX.2 VAE repository.
 echo #
-echo # If the VAE already exists locally, use it and
-echo # do NOT query black-forest-labs/FLUX.2-dev.
+echo # If the VAE already exists locally, use it
 echo # ------------------------------------------------
 echo.
 echo $VaeFile = $null
@@ -575,23 +575,28 @@ echo         path = $LocalVae.Name
 echo     }
 echo }
 echo else {
-echo     $VaeCandidate = $UniqueCandidates ^|
-echo         Where-Object {
-echo             $_.Repo -eq "black-forest-labs/FLUX.2-dev"
+echo     $VaePage = Invoke-WebRequest -Uri "$HFBase/unsloth/FLUX.2-VAE/tree/main/split_files/vae" -UseBasicParsing
+echo     $VaeHref = [regex]::Matches(
+echo         $VaePage.Content,
+echo         'href="([^"]*flux2-vae\.safetensors[^"]*)"'
+echo     ) ^|
+echo         ForEach-Object {
+echo             $_.Groups[1].Value
 echo         } ^|
 echo         Select-Object -First 1
 echo.
-echo     if ($VaeCandidate) {
-echo         $VaeFiles = Get-HfFiles $VaeCandidate.Repo $VaeCandidate.Path
-echo         $VaeFile = Select-File $VaeFiles "vae" $ModelName ""
-echo.
-echo         if ($VaeFile) {
-echo             $VaeRepo = $VaeCandidate.Repo
-echo         }
+echo     if (-not $VaeHref) {
+echo         throw "Unable to find flux2-vae.safetensors download link in the FLUX.2 VAE page."
 echo     }
 echo.
-echo     if (-not $VaeFile) {
-echo         throw "Unable to identify the required FLUX.2 VAE."
+echo     $VaeHref = [System.Net.WebUtility]::HtmlDecode($VaeHref)
+echo     if ($VaeHref -match "^/") {
+echo         $VaeHref = "$HFBase$VaeHref"
+echo     }
+echo     $VaeHref = $VaeHref -replace "/blob/main/", "/resolve/main/"
+echo.
+echo     $VaeFile = [PSCustomObject]@{
+echo         path = $VaeHref
 echo     }
 echo }
 echo.
@@ -625,8 +630,7 @@ echo.
 echo $LlmRepo = $LlmCandidate.Repo
 echo.
 echo # ------------------------------------------------
-echo # FLUX.2-klein does not use CLIP-L, CLIP-G,
-echo # or T5-XXL.
+echo # FLUX.2-klein does not use CLIP-L, CLIP-G, or T5-XXL.
 echo # ------------------------------------------------
 echo.
 echo $ClipLFile = $null
